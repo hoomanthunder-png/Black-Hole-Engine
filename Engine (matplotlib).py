@@ -43,7 +43,7 @@ color_hex_list = [
 ]
 
 from math import sqrt, cos, acos, radians, sin
-import digiunicos
+import NumberLex
 import warnings
 import numpy as np
 from colorama import Fore
@@ -61,7 +61,7 @@ plt.show(block=False)
 
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
-print(Fore.MAGENTA + "Black Hole Engine. Version = 14.435" + Fore.RESET)
+print(Fore.MAGENTA + "Black Hole Engine. Version = 14.719" + Fore.RESET)
 print()
 
 def main():
@@ -107,8 +107,8 @@ def main():
                 print()
                 break
             else:
-                a_star = spin_parser(str(a_star))[0]
-                velocity = spin_parser(str(a_star))[1]
+                a_star = result[0]
+                velocity = result[1]
 
             print(Fore.LIGHTGREEN_EX + f"Dimensionless Spin Parameter: {Fore.RESET} {a_star}", end="\n")
             print(Fore.LIGHTGREEN_EX + f"Black Hole Velocity at the Equator: {Fore.RESET} {speed_unit_manager(velocity)}", end="\n")
@@ -428,11 +428,11 @@ def spin_parser(a_star):
         a_star = float(a_star)
 
         if 0 <= a_star <= 1:
-            velocity = (a_star * c) / 2
+            velocity = c * (1 - np.sqrt(1 - a_star**2)) / a_star
             return a_star, velocity
         else:
             print(
-                f"{Fore.LIGHTCYAN_EX} spin converter says:"
+                f"{Fore.LIGHTCYAN_EX} spin parser says:"
                 f"{Fore.LIGHTRED_EX} Incorrect spin! dimensionless spin must be between 0 and 1!"
             )
             print()
@@ -452,18 +452,40 @@ def spin_parser(a_star):
 
         a_star = float(a_star)
 
-        if 0 <= a_star <= 0.5:
+        if 0 <= a_star <= 1:
             velocity = a_star * c
-            a_star = (2 * velocity) / c
+            a_star = (2 * a_star) / (1 + a_star**2)
             return a_star, velocity
         else:
             print(
-                f"{Fore.LIGHTCYAN_EX} spin converter says:"
-                f"{Fore.LIGHTRED_EX} Incorrect spin! speed must be less or equal to 0.5 c!"
+                f"{Fore.LIGHTCYAN_EX} spin parser says:"
+                f"{Fore.LIGHTRED_EX} Incorrect spin! speed must be less or equal to c!"
             )
             print()
             return False, None
+        
+    elif first_dot == -1 and "c" in a_star:
+        for i in a_star:
+            if i.isalpha():
+                a_star = a_star.replace(str(i), "")
 
+        if a_star != "":
+            a_star = float(a_star)
+        else:
+            a_star = 1
+        
+        if 0 <= a_star <= 1:
+            velocity = a_star * c
+            a_star = (2 * a_star) / (1 + a_star**2)
+            return a_star, velocity
+        else:
+            print(
+                f"{Fore.LIGHTCYAN_EX} spin parser says:"
+                f"{Fore.LIGHTRED_EX} Incorrect spin! speed must be less or equal to c!"
+            )
+            print()
+            return False, None
+        
     else:
         for i in a_star:
             if not i.isdigit():
@@ -471,12 +493,12 @@ def spin_parser(a_star):
 
         if unit == "" and 0 <= float(a_star) <= 1:
             a_star = float(a_star)
-            velocity = (a_star * c) / 2
+            velocity = c * (1 - np.sqrt(1 - a_star**2)) / a_star
             return a_star, velocity
 
         elif unit == "" and not 0 <= float(a_star) <= 1:
             print(
-                f"{Fore.LIGHTCYAN_EX} spin converter says:"
+                f"{Fore.LIGHTCYAN_EX} spin parser says:"
                 f"{Fore.LIGHTRED_EX} Incorrect spin! dimensionless spin must be between 0 and 1!"
             )
             print()
@@ -484,7 +506,7 @@ def spin_parser(a_star):
 
         elif unit != "" and not unit in ["km/s", "kms", "m/s", "ms", "c"]:
             print(
-                f"{Fore.LIGHTCYAN_EX} spin converter says:"
+                f"{Fore.LIGHTCYAN_EX} spin parser says:"
                 f"{Fore.LIGHTRED_EX} Incorrect spin! unit must be either 'km/s' | 'kms' | 'm/s' | 'ms' | 'c'!"
             )
             print()
@@ -499,14 +521,15 @@ def spin_parser(a_star):
                 velocity = a_star
             elif unit == "c":
                 velocity = a_star * c
-            a_star = (2 * velocity) / c
-            if a_star <= 1:
+
+            if 0 <= velocity <= c:
+                a_star = (2 * (velocity / c)) / (1 + (velocity / c)**2)
                 return a_star, velocity
             else:
                 print(
-                    f"{Fore.LIGHTCYAN_EX} spin converter says:"
+                    f"{Fore.LIGHTCYAN_EX} spin parser says:"
                     f"{Fore.LIGHTRED_EX} Incorrect spin! speed must be less or equal to "
-                    f"149,896,229 m/s | 149,896.229 km/s | 0.5 c!"
+                    f"299,792,458 m/s | 299,792.458 km/s | c!"
                 )
                 print()
                 return False, None
@@ -733,14 +756,14 @@ def black_hole_info_print(bh_type, bh_mass, solar_mass, a_star, singularity, inn
             if solar_mass < 1:
                 print(Fore.LIGHTBLACK_EX + f"Less than one Solar Mass!" + Fore.RESET)
             else:
-                print(Fore.LIGHTBLACK_EX + f"{digiunicos.mag_caller(str(solar_mass))} Solar Masses!" + Fore.RESET)
+                print(Fore.LIGHTBLACK_EX + f"{NumberLex.mag_caller(str(solar_mass))} Solar Masses!" + Fore.RESET)
 
             #printing in kilograms
             print(Fore.LIGHTGREEN_EX + f"SI Mass{Fore.RESET} {bh_mass:,} KG!", end="\n")
             if bh_mass < 1:
                 print(Fore.LIGHTBLACK_EX + f"Less than one KiloGram!" + Fore.RESET)
             else:
-                print(Fore.LIGHTBLACK_EX + f"{digiunicos.mag_caller(str(bh_mass))} KiloGrams!" + Fore.RESET)
+                print(Fore.LIGHTBLACK_EX + f"{NumberLex.mag_caller(str(bh_mass))} KiloGrams!" + Fore.RESET)
             print(Fore.RED + "----------------------------------------" + Fore.RESET)
 
             #singularity
@@ -770,14 +793,14 @@ def black_hole_info_print(bh_type, bh_mass, solar_mass, a_star, singularity, inn
             if solar_mass < 1:
                 print(Fore.LIGHTBLACK_EX + f"Less than one Solar Mass!" + Fore.RESET)
             else:
-                print(Fore.LIGHTBLACK_EX + f"{digiunicos.mag_caller(str(solar_mass))} Solar Masses!" + Fore.RESET)
+                print(Fore.LIGHTBLACK_EX + f"{NumberLex.mag_caller(str(solar_mass))} Solar Masses!" + Fore.RESET)
 
             #printing in kilograms
             print(Fore.LIGHTGREEN_EX + f"SI Mass: {Fore.RESET} {bh_mass:,} KG!", end="\n")
             if bh_mass < 1:
                 print(Fore.LIGHTBLACK_EX + f"Less than one KiloGram!" + Fore.RESET)
             else:
-                print(Fore.LIGHTBLACK_EX + f"{digiunicos.mag_caller(str(bh_mass))} KiloGrams!" + Fore.RESET)
+                print(Fore.LIGHTBLACK_EX + f"{NumberLex.mag_caller(str(bh_mass))} KiloGrams!" + Fore.RESET)
             print(Fore.RED + "----------------------------------------" + Fore.RESET)
 
             #singularity
@@ -1794,24 +1817,25 @@ def select_object_experience_type(bh_type, bh_mass, a_star):
         case "1":
             s_polar_angle, s_azimuthal_angle = get_start_coordinates("1")
             print(Fore.RED + "----------------------------------------" + Fore.RESET)
-            distance = get_distance("1", bh_type, bh_mass, a_star, s_polar_angle)
+            distance = get_distance("1", bh_type, bh_mass, a_star, s_polar_angle, direction)
             print(Fore.RED + "----------------------------------------" + Fore.RESET)
         case "2":
             s_polar_angle, s_azimuthal_angle = get_start_coordinates("2")
             print(Fore.RED + "----------------------------------------" + Fore.RESET)
-            distance = get_distance("2", bh_type, bh_mass, a_star, s_polar_angle)
+            if bh_type in ["kerr", "2"]:
+                direction = get_direction()
             print(Fore.RED + "----------------------------------------" + Fore.RESET)
-            direction = get_direction()
+            distance = get_distance("2", bh_type, bh_mass, a_star, s_polar_angle, direction)
             print(Fore.RED + "----------------------------------------" + Fore.RESET)
         case "3":
             s_polar_angle, s_azimuthal_angle = get_start_coordinates("3")
             print(Fore.RED + "----------------------------------------" + Fore.RESET)
-            distance = get_distance("3", bh_type, bh_mass, a_star, s_polar_angle)
+            distance = get_distance("3", bh_type, bh_mass, a_star, s_polar_angle, direction)
             print(Fore.RED + "----------------------------------------" + Fore.RESET)
         case "4":
             s_polar_angle, s_azimuthal_angle = get_start_coordinates("4")
             print(Fore.RED + "----------------------------------------" + Fore.RESET)
-            distance = get_distance("4", bh_type, bh_mass, a_star, s_polar_angle)
+            distance = get_distance("4", bh_type, bh_mass, a_star, s_polar_angle, direction)
             print(Fore.RED + "----------------------------------------" + Fore.RESET)
             velocity = get_velocity()
             print(Fore.RED + "----------------------------------------" + Fore.RESET)
@@ -1887,23 +1911,53 @@ def get_start_coordinates(xp_type):
 
     return np.radians(polar_angle), np.radians(azimuthal_angle)
 
-def get_distance(xp_type, bh_type, bh_mass, a_star, s_polar_angle):
+def get_direction():
+    while True:
+        direction = input(Fore.LIGHTYELLOW_EX + f"in which Direction you want to orbit this Monster?\n"
+        + Fore.LIGHTBLACK_EX + "Enter '1' as Prograde\n"
+        "Enter '2' as Retrograde\n"
+        + Fore.RESET + "==============================\n"
+        ">>>")
+
+        if direction not in ["1", "2"]:
+            print(f"{Fore.LIGHTCYAN_EX} get_experience_type says:{Fore.LIGHTRED_EX} Incorrect Direction! must be '1' or '2'!")
+            print()
+            continue
+        else:
+            print(f"{Fore.LIGHTGREEN_EX} Prograde Orbting Object. {Fore.RESET}") if direction == "1" else print(f"{Fore.LIGHTGREEN_EX} Retrograde Orbiting Object. {Fore.RESET}")
+            print()
+        break
+    
+    return "prograde" if direction == "1" else "retrograde"
+
+def get_distance(xp_type, bh_type, bh_mass, a_star, s_polar_angle, direction):
     match xp_type:
         case "1":
             first_message = "How near you want to be at the Event Horizon?"
             second_message = "Stationary Object at the Boyer-Lindquist Distance of "
+            #calculating minimum safe place outside the ergosphere
+            safe_distance = outer_ergosphere_radius(bh_mass, a_star, s_polar_angle, False) - outer_event_horizon_radius(bh_type, bh_mass, a_star, s_polar_angle, False)
+            hint_message = (
+                f"{Fore.LIGHTYELLOW_EX}Hint : Minimum Safe Boyer-Lindquist Distance from Event Horizon at a Polar Angle of {Fore.LIGHTRED_EX}{int(np.round(np.degrees(s_polar_angle)))}°{Fore.LIGHTYELLOW_EX} should be more than: {Fore.RESET}{length_unit_manager(safe_distance)}.\n"
+                f"{Fore.LIGHTYELLOW_EX} Cartesian Equivalent is {Fore.RESET}{length_unit_manager(cartesian_radius(bh_mass, outer_ergosphere_radius(bh_mass, a_star, s_polar_angle, False), a_star, s_polar_angle) - cartesian_radius(bh_mass, outer_event_horizon_radius(bh_type, bh_mass, a_star, s_polar_angle, False), a_star, s_polar_angle))}\n"
+                f"{Fore.LIGHTYELLOW_EX}Distance should be greater than the Event Horizon Radius.{Fore.RESET}"
+            ) 
         case "2":
             first_message = "How near you want to orbit around the Event Horizon?"
             second_message = "Orbiting Object at the Boyer-Lindquist Distance of"
+            #calculating minimum safe place outside the photon ring
+            safe_distance = photon_sphere_radius(bh_type, bh_mass, a_star, direction, s_polar_angle, False) - outer_event_horizon_radius(bh_type, bh_mass, a_star, s_polar_angle, False)
+            hint_message = (
+                f"{Fore.LIGHTYELLOW_EX}Hint : Minimum Safe Boyer-Lindquist Distance from Event Horizon at a Polar Angle of {Fore.LIGHTRED_EX}{int(np.round(np.degrees(s_polar_angle)))}°{Fore.LIGHTYELLOW_EX} should be more than: {Fore.RESET}{length_unit_manager(safe_distance)}.\n"
+                f"{Fore.LIGHTYELLOW_EX} Cartesian Equivalent is {Fore.RESET}{length_unit_manager(cartesian_radius(bh_mass, photon_sphere_radius(bh_type, bh_mass, a_star, direction, s_polar_angle, False), a_star, s_polar_angle) - cartesian_radius(bh_mass, outer_event_horizon_radius(bh_type, bh_mass, a_star, s_polar_angle, False), a_star, s_polar_angle))}\n"
+                f"{Fore.LIGHTYELLOW_EX}Distance should be greater than the Photon Ring Radius.{Fore.RESET}"
+            )
         case "3":
             first_message = "From which distance you want to fall toward the Event Horizon?"
             second_message = "Falling Object at the Boyer-Lindquist Distance of"
         case "4":
             first_message = "From which distance you want to ignite toward the Event Horizon?"
             second_message = "Speeding Object at the Boyer-Lindquist Distance of"
-
-    #calculating minimum safe place outside the ergosphere
-    safe_distance = cartesian_radius(bh_mass, outer_ergosphere_radius(bh_mass, a_star, s_polar_angle, False), a_star, s_polar_angle) - cartesian_radius(bh_mass, outer_event_horizon_radius(bh_type, bh_mass, a_star, s_polar_angle, False), a_star, s_polar_angle)
 
     while True:
         distance = input(Fore.LIGHTYELLOW_EX + f"{first_message}\n"
@@ -1912,7 +1966,7 @@ def get_distance(xp_type, bh_type, bh_mass, a_star, s_polar_angle):
         "use 'au' as Astronomical Unit\n"
         "use 'ly' as Light Years\n"
         "or enter without any to use 'm' as default\n"
-        f"{Fore.LIGHTYELLOW_EX}Hint : Minimum Safe Distance at a Polar Angle of {Fore.LIGHTRED_EX}{np.round(np.degrees(s_polar_angle))}{Fore.LIGHTYELLOW_EX} is: {Fore.RESET}{length_unit_manager(safe_distance + 0.001)}.\n"
+        f"{hint_message}\n"
         + Fore.RESET + "==============================\n"
         ">>>")
         try:
@@ -1949,25 +2003,6 @@ def get_distance(xp_type, bh_type, bh_mass, a_star, s_polar_angle):
             continue
 
     return float(distance)
-
-def get_direction():
-    while True:
-        direction = input(Fore.LIGHTYELLOW_EX + f"in which Direction you want to orbit this Monster?\n"
-        + Fore.LIGHTBLACK_EX + "Enter '1' as Prograde\n"
-        "Enter '2' as Retrograde\n"
-        + Fore.RESET + "==============================\n"
-        ">>>")
-
-        if direction not in ["1", "2"]:
-            print(f"{Fore.LIGHTCYAN_EX} get_experience_type says:{Fore.LIGHTRED_EX} Incorrect Direction! must be '1' or '2'!")
-            print()
-            continue
-        else:
-            print(f"{Fore.LIGHTGREEN_EX} Prograde Orbting Object. {Fore.RESET}") if direction == "1" else print(f"{Fore.LIGHTGREEN_EX} Retrograde Orbiting Object. {Fore.RESET}")
-            print()
-        break
-
-    return direction
 
 def get_velocity():
     while True:
@@ -2062,7 +2097,9 @@ def object_experience(bh_type, bh_mass, a_star, xp_type, distance, direction, s_
             stationary_object_xp_info_print(bh_type, bh_mass, a_star, distance, s_polar_angle, s_azimuthal_angle)
             stationary_object_xp_draw(bh_type, bh_mass, a_star, distance, s_polar_angle, s_azimuthal_angle)
         case "2":
-            ...
+            print(Fore.RED + "Orbiting Object Statistics" + Fore.RESET)
+            coordinate_data = stationary_object_xp_draw(bh_type, bh_mass, a_star, distance, s_polar_angle, s_azimuthal_angle)
+            orbiting_object_xp_draw(bh_type, bh_mass, a_star, distance, direction, s_polar_angle, coordinate_data[0], coordinate_data[1], coordinate_data[2], coordinate_data[3], coordinate_data[4], coordinate_data[5])
         case "3":
             ...
         case "4":
@@ -2073,7 +2110,7 @@ def length_unit_manager(item):
     for limit, function, unit in length_type_list:
         if item < limit:
             length = function(item)
-            return f"{length:,.3f} {unit}"
+            return f"{length:,.5f} {unit}"
               
 def speed_unit_manager(velocity):
     for limit, function, unit in speed_type_list:
@@ -3873,15 +3910,15 @@ def stationary_object_xp_info_print(bh_type, bh_mass, a_star, distance, s_polar_
     print(Fore.LIGHTCYAN_EX + f"Object's Cartesian Distance from the Outer Event Horizon: {Fore.RESET}{length_unit_manager(object_cartesian_distance_from_horizon)}.", end="\n")
     print(Fore.RED + "----------------------------------------" + Fore.RESET)
 
-    cartesian_distance_from_ergosphere = object_cartesian_distance_from_bh_center - cartesian_radius(bh_mass, outer_er, a_star, s_polar_angle)
+    object_cartesian_distance_from_ergosphere = object_cartesian_distance_from_bh_center - cartesian_radius(bh_mass, outer_er, a_star, s_polar_angle)
 
-    if cartesian_distance_from_ergosphere >= 0:
-        print(Fore.LIGHTCYAN_EX + f"Object's Cartesian Distance from the Outer Ergosphere:{Fore.RESET}{length_unit_manager(cartesian_distance_from_ergosphere)}.", end="\n")
+    if object_cartesian_distance_from_ergosphere >= 0:
+        print(Fore.LIGHTCYAN_EX + f"Object's Cartesian Distance from the Outer Ergosphere:{Fore.RESET}{length_unit_manager(object_cartesian_distance_from_ergosphere)}.", end="\n")
     else:
-        print(Fore.LIGHTCYAN_EX + f"Object's Cartesian Distance from the Outer Ergosphere:{Fore.RED} NEGATIVE!{Fore.RESET}{length_unit_manager(np.abs(cartesian_distance_from_ergosphere))}.", end="\n")
+        print(Fore.LIGHTCYAN_EX + f"Object's Cartesian Distance from the Outer Ergosphere:{Fore.RED} NEGATIVE!{Fore.RESET}{length_unit_manager(np.abs(object_cartesian_distance_from_ergosphere))}.", end="\n")
     print(Fore.RED + "----------------------------------------" + Fore.RESET)
 
-    if bh_type in ["kerr", "2"] and cartesian_distance_from_ergosphere <= 0:
+    if bh_type in ["kerr", "2"] and object_cartesian_distance_from_ergosphere <= 0:
         print(f"{Fore.RED}Object CAN'T be Stationary inside the Black Hole's Ergosphere!!\n"
               f"{Fore.LIGHTGREEN_EX}Stationary Object at a Distance of {Fore.RESET}{length_unit_manager(object_cartesian_distance_from_bh_center)}{Fore.LIGHTGREEN_EX} from the Black Hole's Center.\n"
                 f"and {Fore.RESET}{length_unit_manager(object_cartesian_distance_from_horizon)}{Fore.LIGHTGREEN_EX} from the Outer Horizon.")
@@ -3897,20 +3934,29 @@ def stationary_object_xp_info_print(bh_type, bh_mass, a_star, distance, s_polar_
         fdl_velocity = frame_dragging_linear_velocity(bh_mass, a_star, fda_velocity, distance, s_polar_angle)
         print(f"{Fore.LIGHTGREEN_EX}Frame-dragging coordinate linear speed: {Fore.RESET}{speed_unit_manager(fdl_velocity)}.")
 
+    return (
+        x_center, y_center, z_center,
+        outer_ev,
+        object_cartesian_distance_from_bh_center,
+        object_cartesian_distance_from_horizon,
+        object_cartesian_distance_from_ergosphere,
+        fdl_velocity
+    )
+
 def stationary_object_xp_draw(bh_type, bh_mass, a_star, distance, s_polar_angle, s_azimuthal_angle):
-    x_center, y_center, z_center = cartesian(bh_mass, distance, s_polar_angle, s_azimuthal_angle, a_star)
+    object_data = stationary_object_xp_info_print(bh_type, bh_mass, a_star, distance, s_polar_angle, s_azimuthal_angle)
 
-    outer_ev = outer_event_horizon_radius(bh_type, bh_mass, a_star, s_polar_angle, False)
+    x_center, y_center, z_center = object_data[0], object_data[1], object_data[2]
 
-    outer_er = outer_ergosphere_radius(bh_mass, a_star, s_polar_angle, False)
+    outer_ev = object_data[3]
 
-    object_cartesian_distance_from_bh_center = np.sqrt(x_center**2 + y_center**2 + z_center**2)
+    object_cartesian_distance_from_bh_center = object_data[4]
 
-    object_cartesian_distance_from_horizon = object_cartesian_distance_from_bh_center - cartesian_radius(bh_mass, outer_ev, a_star, s_polar_angle)
+    object_cartesian_distance_from_horizon = object_data[5]
 
-    cartesian_distance_from_ergosphere = object_cartesian_distance_from_bh_center - cartesian_radius(bh_mass, outer_er, a_star, s_polar_angle)
+    object_cartesian_distance_from_ergosphere = object_data[6]
 
-    if bh_type in ["kerr", "2"] and cartesian_distance_from_ergosphere <= 0:
+    if bh_type in ["kerr", "2"] and object_cartesian_distance_from_ergosphere <= 0:
         edgecolor = "red"
         text = f"Object CAN'T be Stationary inside the Black Hole's Ergosphere!!\n Stationary Object at a Distance of {length_unit_manager(object_cartesian_distance_from_bh_center)} from the Black Hole's Center.\n and {length_unit_manager(object_cartesian_distance_from_horizon)} from the Outer Horizon."
     else:
@@ -3921,8 +3967,7 @@ def stationary_object_xp_draw(bh_type, bh_mass, a_star, distance, s_polar_angle,
     if bh_type in ["schw", "1"]:
         fd_text = "No Frame Dragging."
     elif bh_type in ["kerr", "2"]:
-        fda_velocity = frame_dragging_angular_velocity(bh_mass, a_star, distance, gravitational_radius(bh_mass), s_polar_angle, False)
-        fdl_velocity = frame_dragging_linear_velocity(bh_mass, a_star, fda_velocity, distance, s_polar_angle)
+        fdl_velocity = object_data[7]
         fd_text = f"Frame-dragging coordinate linear speed: {speed_unit_manager(fdl_velocity)}."
     
     sphere_theta = np.linspace(0, np.pi, 20)
@@ -3930,11 +3975,11 @@ def stationary_object_xp_draw(bh_type, bh_mass, a_star, distance, s_polar_angle,
 
     sphere_theta, sphere_phi = np.meshgrid(sphere_theta, sphere_phi)
 
-    x = x_center + (outer_ev / 50) * np.sin(sphere_theta) * np.cos(sphere_phi)
-    y = y_center + (outer_ev / 50) * np.sin(sphere_theta) * np.sin(sphere_phi)
-    z = z_center + (outer_ev / 50) * np.cos(sphere_theta)
+    x = x_center + (outer_ev / 60) * np.sin(sphere_theta) * np.cos(sphere_phi)
+    y = y_center + (outer_ev / 60) * np.sin(sphere_theta) * np.sin(sphere_phi)
+    z = z_center + (outer_ev / 60) * np.cos(sphere_theta)
 
-    ax.plot_surface(x, y, z, color="black", alpha=1, edgecolor=edgecolor, linewidth=0.15)
+    object = ax.plot_surface(x, y, z, color="black", alpha=1, edgecolor=edgecolor, linewidth=0.15)
 
     x = x_center / distance
     y = y_center / distance
@@ -3947,12 +3992,24 @@ def stationary_object_xp_draw(bh_type, bh_mass, a_star, distance, s_polar_angle,
     stationary_text = ax.text(x_center + (x * (outer_ev / 2)) , y_center + (y * (outer_ev / 2)), z_center + (z * (outer_ev / 2)), f"{text} \n {fd_text}", 
                               color="white", path_effects=[pe.withStroke(linewidth=1.6, foreground="black")], fontsize=10)
 
+    ax.set_box_aspect([1, 1, 1])
+    
     #show the object
     plt.pause(0.5)
 
-    return stationary_arrow, stationary_text
+    return stationary_arrow, stationary_text, x_center, y_center, z_center, object
 
-# def orbiting_object_xp(bh_type, bh_mass, a_star, distance, direction, s_polar_angle, s_azimuthal_angle):
+def orbiting_object_xp_draw(bh_type, bh_mass, a_star, distance, direction, s_polar_angle, stationary_arrow, stationary_text, x_center, y_center, z_center, object):
+    #removing arrow and text
+    for arrow in stationary_arrow:
+        arrow.remove()
+
+    stationary_text.remove()
+
+    outer_ev = outer_event_horizon_radius(bh_type, bh_mass, a_star, s_polar_angle, False)
+
+    photon_ring = photon_sphere_radius(bh_type, bh_mass, a_star, direction, s_polar_angle, False)
+
     match bh_type:
         case "schw" | "1":
             color = "#e0115f"
@@ -3966,41 +4023,50 @@ def stationary_object_xp_draw(bh_type, bh_mass, a_star, distance, s_polar_angle,
                     color = "#e0115f"
                     text = "Co-Rotating Object's Orbit Cartesian Radius at"
                 case "2":
-                    color = "#00f0ff"
+                    color = "#1160b0"
                     text = "Counter-Rotating Object's Orbit Cartesian Radius at"
 
             #adding space-time velocity at object's ring
             fda_velocity = frame_dragging_angular_velocity(bh_mass, a_star, distance, gravitational_radius(bh_mass), s_polar_angle, False)
             fdl_velocity = frame_dragging_linear_velocity(bh_mass, a_star, fda_velocity, distance, s_polar_angle)
 
-    #setting the amount of the ring inclination
-    inclination = np.pi / 2 - s_polar_angle
+    #object's radial direction
+    r = np.array([x_center, y_center, z_center], dtype=float)
+    r = r / np.linalg.norm(r)
 
-    sphere_phi = np.linspace(0, 2 * np.pi, 100)
+    #first orbital direction
+    u = np.cross(r, [0, 0, 1])
 
-    #creating the object's ring
-    if np.isclose(s_polar_angle, 0) or np.isclose(s_polar_angle, np.pi):
-        x = distance * np.cos(sphere_phi)
-        y = np.zeros_like(sphere_phi)
-        z = distance * np.sin(sphere_phi)
-    else:
-        x ,y, z = object_cartesian(distance, np.pi / 2, sphere_phi)
+    if np.linalg.norm(u) < 1e-6:
+        u = np.cross(r, [1, 0, 0])
 
-        #rotate the object's ring around the x-axis
-        y_rot = y * np.cos(inclination) - z * np.sin(inclination)
-        z_rot = y * np.sin(inclination) + z * np.cos(inclination)
+    u = u / np.linalg.norm(u)
 
-        y = y_rot
-        z = z_rot
+    #create the object's ring
+    phi = np.linspace(0, 2 * np.pi, 100)
+    radius = np.linalg.norm([x_center, y_center, z_center])
 
-        #creatig the object's orbit ring
-        ax.plot(x, y, z, color=color, linewidth=2)
+    x = radius * (r[0] * np.cos(phi) + u[0] * np.sin(phi))
+    y = radius * (r[1] * np.cos(phi) + u[1] * np.sin(phi))
+    z = radius * (r[2] * np.cos(phi) + u[2] * np.sin(phi))
 
-        #drawing the arrow for object's orbit ring
-        ax.plot([x[0], x[0] * 1.5], [y[0], y[0] * 1.6], [z[0], z[0] * 1.3], color=color)
+    #plot the object's orbit ring
+    ax.plot(x, y, z, color=color, linewidth=2)
 
-        #adding the text for object's orbit ring
-        ax.text(x[0] * 1.5, y[0] * 1.6, z[0] * 1.3, f"{text} {round(np.degrees(s_polar_angle))}°: {length_unit_manager(cartesian_radius(bh_mass, distance, a_star, s_polar_angle))} from the Black Hole's Center.\n and {length_unit_manager(cartesian_radius(bh_mass, distance - outer_ev, a_star, s_polar_angle))} from the Outer Horizon.\n Frame-dragging coordinate linear speed: {speed_unit_manager(fdl_velocity)}", color=color, path_effects=[pe.withStroke(linewidth=2, foreground="white")], fontsize=10)
+    x_text = x_center / distance
+    y_text = y_center / distance
+    z_text = z_center / distance
+
+    #drawing the arrow for object's orbit ring
+    ax.plot([x_center, x_center + (x_text * (outer_ev / 2))], [y_center, y_center + (y_text * (outer_ev / 2))], [z_center, z_center + (z_text * (outer_ev / 2))], color=color)
+
+    #adding the text for object's orbit ring
+    ax.text(x_center + (x_text * (outer_ev / 2)) , y_center + (y_text * (outer_ev / 2)), z_center + (z_text * (outer_ev / 2)), f"{text} {round(np.degrees(s_polar_angle))}°: {length_unit_manager(cartesian_radius(bh_mass, distance, a_star, s_polar_angle))} from the Black Hole's Center.\n and {length_unit_manager(cartesian_radius(bh_mass, distance - outer_ev, a_star, s_polar_angle))} from the Outer Horizon.\n Frame-dragging coordinate linear speed: {speed_unit_manager(fdl_velocity)}", color=color, path_effects=[pe.withStroke(linewidth=2, foreground="white")], fontsize=10)
+
+    ax.set_box_aspect([1, 1, 1])
+    
+    #show the object
+    plt.pause(0.5)
 
 #velocity calculators
 def frame_dragging_angular_velocity(bh_mass, a_star, distance, gravitational_radius, theta, show):
