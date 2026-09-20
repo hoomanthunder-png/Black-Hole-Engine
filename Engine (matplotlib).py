@@ -490,6 +490,7 @@ def spin_parser(a_star):
         for i in a_star:
             if not i.isdigit():
                 unit += str(i)
+                a_star = a_star.replace(str(i), "")
 
         if unit == "" and 0 <= float(a_star) <= 1:
             a_star = float(a_star)
@@ -2098,8 +2099,10 @@ def object_experience(bh_type, bh_mass, a_star, xp_type, distance, direction, s_
             stationary_object_xp_draw(bh_type, bh_mass, a_star, distance, s_polar_angle, s_azimuthal_angle)
         case "2":
             print(Fore.RED + "Orbiting Object Statistics" + Fore.RESET)
-            coordinate_data = stationary_object_xp_draw(bh_type, bh_mass, a_star, distance, s_polar_angle, s_azimuthal_angle)
-            orbiting_object_xp_draw(bh_type, bh_mass, a_star, distance, direction, s_polar_angle, coordinate_data[0], coordinate_data[1], coordinate_data[2], coordinate_data[3], coordinate_data[4], coordinate_data[5])
+            orbiting_object_xp_info_print(bh_type, bh_mass, a_star, distance, direction, s_polar_angle, s_azimuthal_angle)
+            object_data = stationary_object_xp_draw(bh_type, bh_mass, a_star, distance, s_polar_angle, s_azimuthal_angle)
+            orbiting_object_xp_draw(bh_type, bh_mass, a_star, distance, direction, s_polar_angle, s_azimuthal_angle, object_data[0], object_data[1], object_data[2], object_data[3], object_data[4], object_data[5])
+
         case "3":
             ...
         case "4":
@@ -3897,8 +3900,8 @@ def stationary_object_xp_info_print(bh_type, bh_mass, a_star, distance, s_polar_
     outer_er = outer_ergosphere_radius(bh_mass, a_star, s_polar_angle, False)
 
     print(Fore.LIGHTMAGENTA_EX + f"Outer Ergosphere:", end="\n")
-    print(Fore.LIGHTGREEN_EX + f"Outer Ergosphere Boyer-Lindquist Radiusat at the Polar Angle of {Fore.LIGHTRED_EX}{np.round(np.degrees(s_polar_angle))}°{Fore.LIGHTGREEN_EX}: {Fore.RESET}{length_unit_manager(outer_er)}.", end="\n")
-    print(Fore.LIGHTCYAN_EX + f"Outer Ergosphere Cartesian Radiusat the Polar Angle of {Fore.LIGHTRED_EX}{np.round(np.degrees(s_polar_angle))}°{Fore.LIGHTGREEN_EX}: {Fore.RESET}{length_unit_manager(cartesian_radius(bh_mass, outer_er, a_star, s_polar_angle))}", end="\n")
+    print(Fore.LIGHTGREEN_EX + f"Outer Ergosphere Boyer-Lindquist Radius at the Polar Angle of {Fore.LIGHTRED_EX}{np.round(np.degrees(s_polar_angle))}°{Fore.LIGHTGREEN_EX}: {Fore.RESET}{length_unit_manager(outer_er)}.", end="\n")
+    print(Fore.LIGHTCYAN_EX + f"Outer Ergosphere Cartesian Radius the Polar Angle of {Fore.LIGHTRED_EX}{np.round(np.degrees(s_polar_angle))}°{Fore.LIGHTGREEN_EX}: {Fore.RESET}{length_unit_manager(cartesian_radius(bh_mass, outer_er, a_star, s_polar_angle))}", end="\n")
     print(Fore.RED + "----------------------------------------" + Fore.RESET)
 
     object_cartesian_distance_from_bh_center = np.sqrt(x_center**2 + y_center**2 + z_center**2)
@@ -3912,10 +3915,12 @@ def stationary_object_xp_info_print(bh_type, bh_mass, a_star, distance, s_polar_
 
     object_cartesian_distance_from_ergosphere = object_cartesian_distance_from_bh_center - cartesian_radius(bh_mass, outer_er, a_star, s_polar_angle)
 
-    if object_cartesian_distance_from_ergosphere >= 0:
+    if object_cartesian_distance_from_ergosphere > 0:
         print(Fore.LIGHTCYAN_EX + f"Object's Cartesian Distance from the Outer Ergosphere:{Fore.RESET}{length_unit_manager(object_cartesian_distance_from_ergosphere)}.", end="\n")
-    else:
+    elif object_cartesian_distance_from_ergosphere < 0:
         print(Fore.LIGHTCYAN_EX + f"Object's Cartesian Distance from the Outer Ergosphere:{Fore.RED} NEGATIVE!{Fore.RESET}{length_unit_manager(np.abs(object_cartesian_distance_from_ergosphere))}.", end="\n")
+    else:
+        print(Fore.LIGHTCYAN_EX + f"Warning! Object is on the Outer Ergosphere!", end="\n")
     print(Fore.RED + "----------------------------------------" + Fore.RESET)
 
     if bh_type in ["kerr", "2"] and object_cartesian_distance_from_ergosphere <= 0:
@@ -3999,22 +4004,138 @@ def stationary_object_xp_draw(bh_type, bh_mass, a_star, distance, s_polar_angle,
 
     return stationary_arrow, stationary_text, x_center, y_center, z_center, object
 
-def orbiting_object_xp_draw(bh_type, bh_mass, a_star, distance, direction, s_polar_angle, stationary_arrow, stationary_text, x_center, y_center, z_center, object):
+def orbiting_object_xp_info_print(bh_type, bh_mass, a_star, distance, direction, s_polar_angle, s_azimuthal_angle):
+    x_center, y_center, z_center = cartesian(bh_mass, distance, s_polar_angle, s_azimuthal_angle, a_star)
+
+    outer_ev = outer_event_horizon_radius(bh_type, bh_mass, a_star, s_polar_angle, False)
+
+    print(Fore.LIGHTMAGENTA_EX + f"Outer Event Horizon:", end="\n")
+    print(Fore.LIGHTGREEN_EX + f"Outer Event Horizon Boyer-Lindquist Radius at the Polar Angle of {Fore.LIGHTRED_EX}{np.round(np.degrees(s_polar_angle))}°{Fore.LIGHTGREEN_EX}: {Fore.RESET}{length_unit_manager(outer_ev)}.", end="\n")
+    print(Fore.LIGHTCYAN_EX + f"Outer Event Horizon Cartesian Radius at the Polar Angle of {Fore.LIGHTRED_EX}{np.round(np.degrees(s_polar_angle))}°{Fore.LIGHTGREEN_EX}: {Fore.RESET}{length_unit_manager(cartesian_radius(bh_mass, outer_ev, a_star, s_polar_angle))}{Fore.LIGHTGREEN_EX}.", end="\n")
+    print(Fore.RED + "----------------------------------------" + Fore.RESET)
+
+    photon_ring = photon_sphere_radius(bh_type, bh_mass, a_star, direction, s_polar_angle, False)
+
+    isco_ring = isco_sphere_radius(bh_type, bh_mass, a_star, direction, s_polar_angle, False)
+
+    match direction:
+        case "prograde":
+            photon_text = "Co-Rotating Photon Ring"
+            isco_text = "Co-Rotating ISCO Ring"
+        case "retrograde":
+            photon_text = "Counter-Rotating Photon Ring"
+            isco_text = "Counter-Rotating ISCO Ring"
+
+    print(Fore.LIGHTMAGENTA_EX + f"Photon Ring:", end="\n")
+    print(Fore.LIGHTGREEN_EX + f"{photon_text} Boyer-Lindquist Radius at the Polar Angle of {Fore.LIGHTRED_EX}{np.round(np.degrees(s_polar_angle))}°{Fore.LIGHTGREEN_EX}: {Fore.RESET}{length_unit_manager(photon_ring)}.", end="\n")
+    print(Fore.LIGHTCYAN_EX + f"{photon_text} Cartesian Radius the Polar Angle of {Fore.LIGHTRED_EX}{np.round(np.degrees(s_polar_angle))}°{Fore.LIGHTGREEN_EX}: {Fore.RESET}{length_unit_manager(cartesian_radius(bh_mass, photon_ring, a_star, s_polar_angle))}", end="\n")
+    print(Fore.RED + "----------------------------------------" + Fore.RESET)
+
+    print(Fore.LIGHTMAGENTA_EX + f"ISCO Ring:", end="\n")
+    print(Fore.LIGHTGREEN_EX + f"{isco_text} Boyer-Lindquist Radius at the Polar Angle of {Fore.LIGHTRED_EX}{np.round(np.degrees(s_polar_angle))}°{Fore.LIGHTGREEN_EX}: {Fore.RESET}{length_unit_manager(isco_ring)}.", end="\n")
+    print(Fore.LIGHTCYAN_EX + f"{isco_text} Cartesian Radius the Polar Angle of {Fore.LIGHTRED_EX}{np.round(np.degrees(s_polar_angle))}°{Fore.LIGHTGREEN_EX}: {Fore.RESET}{length_unit_manager(cartesian_radius(bh_mass, isco_ring, a_star, s_polar_angle))}", end="\n")
+    print(Fore.RED + "----------------------------------------" + Fore.RESET)  
+
+    object_cartesian_distance_from_bh_center = np.sqrt(x_center**2 + y_center**2 + z_center**2)
+
+    print(Fore.LIGHTCYAN_EX + f"Object's Cartesian Distance from the Black Hole's Center: {Fore.RESET}{length_unit_manager(object_cartesian_distance_from_bh_center)}.", end="\n")
+
+    object_cartesian_distance_from_horizon = object_cartesian_distance_from_bh_center - cartesian_radius(bh_mass, outer_ev, a_star, s_polar_angle)
+
+    print(Fore.LIGHTCYAN_EX + f"Object's Cartesian Distance from the Outer Event Horizon: {Fore.RESET}{length_unit_manager(object_cartesian_distance_from_horizon)}.", end="\n")
+    print(Fore.RED + "----------------------------------------" + Fore.RESET)
+
+    match bh_type:
+        case ["schw" | "1"]:
+            photon_text = "Photon"
+            isco_text = "ISCO"
+        case ["kerr" | "2"]:
+            match direction:
+                case "prograde":
+                    photon_text = "Co-Photon"
+                    isco_text = "Co-ISCO"
+                case "retrograde":
+                    photon_text = "Counter-Photon"
+                    isco_text = "Counter-ISCO"
+
+    if object_cartesian_distance_from_bh_center > cartesian_radius(bh_mass, isco_ring, a_star, s_polar_angle):
+        print(
+            Fore.GREEN + f"Object's Orbit is Safe (Beyond ISCO Ring):\n"
+            f"{Fore.RED}Photon Ring:{Fore.RESET}{length_unit_manager(cartesian_radius(bh_mass, photon_ring, a_star, s_polar_angle))}"
+            f"< {Fore.YELLOW}Object Distance From Horizon:{Fore.RESET}{length_unit_manager(object_cartesian_distance_from_bh_center)}"
+            f"< {Fore.LIGHTGREEN_EX}ISCO Ring:{Fore.RESET}{length_unit_manager(cartesian_radius(bh_mass, isco_ring, a_star, s_polar_angle))}."
+            , end="\n")
+    elif cartesian_radius(bh_mass, photon_ring, a_star, s_polar_angle) < object_cartesian_distance_from_bh_center <= cartesian_radius(bh_mass, isco_ring, a_star, s_polar_angle):
+        print(
+            Fore.YELLOW + f"Object's Orbit is Unstable (Between Photon Ring and ISCO Ring):\n"
+            f"{Fore.RED}Photon_Ring:{Fore.RESET}{length_unit_manager(cartesian_radius(bh_mass, photon_ring, a_star, s_polar_angle))}"
+            f"< {Fore.YELLOW}Object Distance From Horizon:{Fore.RESET}{length_unit_manager(object_cartesian_distance_from_bh_center)}"
+            f"< {Fore.LIGHTGREEN_EX}ISCO Ring:{Fore.RESET}{length_unit_manager(cartesian_radius(bh_mass, isco_ring, a_star, s_polar_angle))}."
+            , end="\n")
+    elif cartesian_radius(bh_mass, photon_ring, a_star, s_polar_angle) >= object_cartesian_distance_from_bh_center:
+        print(
+            Fore.YELLOW + f"Object's Orbit is IMPOSSIBLE!! (Over or Inside the Photon Ring!):\n"
+            f"{Fore.RED}Photon Ring:{Fore.RESET}{length_unit_manager(cartesian_radius(bh_mass, photon_ring, a_star, s_polar_angle))}"
+            f"< {Fore.YELLOW}Object Distance From Horizon:{Fore.RESET}{length_unit_manager(object_cartesian_distance_from_bh_center)}"
+            f"< {Fore.LIGHTGREEN_EX}ISCO Ring:{Fore.RESET}{length_unit_manager(cartesian_radius(bh_mass, isco_ring, a_star, s_polar_angle))}."
+            , end="\n")
+    print(Fore.RED + "----------------------------------------" + Fore.RESET)
+
+    if object_cartesian_distance_from_photon_ring <= 0:
+        print(f"{Fore.RED}Object CAN'T Orbit inside the Black Hole's {text}!!\n"
+              f"{Fore.LIGHTGREEN_EX}Orbting Object at a Distance of {Fore.RESET}{length_unit_manager(object_cartesian_distance_from_bh_center)}{Fore.LIGHTGREEN_EX} from the Black Hole's Center.\n"
+                f"and {Fore.RESET}{length_unit_manager(object_cartesian_distance_from_horizon)}{Fore.LIGHTGREEN_EX} from the Outer Horizon.")
+    else:
+        print(f"{Fore.LIGHTGREEN_EX}Orbiting Object Can be at a Distance of {Fore.RESET}{length_unit_manager(object_cartesian_distance_from_bh_center)}{Fore.LIGHTGREEN_EX} from the Black Hole's Center.\n"
+              f"and {Fore.RESET}{length_unit_manager(object_cartesian_distance_from_horizon)}{Fore.LIGHTGREEN_EX} from the Outer Horizon.")
+    print(Fore.RED + "----------------------------------------" + Fore.RESET)    
+
+    if bh_type in ["schw", "1"]:
+        print(f"{Fore.LIGHTGREEN_EX}No Frame Dragging for a Schwarzschild Black Hole.{Fore.RESET}")
+    elif bh_type in ["kerr", "2"]:
+        fda_velocity = frame_dragging_angular_velocity(bh_mass, a_star, distance, gravitational_radius(bh_mass), s_polar_angle, False)
+        fdl_velocity = frame_dragging_linear_velocity(bh_mass, a_star, fda_velocity, distance, s_polar_angle)
+        print(f"{Fore.LIGHTGREEN_EX}Frame-dragging coordinate linear speed: {Fore.RESET}{speed_unit_manager(fdl_velocity)}.")
+
+    return (
+        x_center, y_center, z_center,
+        outer_ev,
+        object_cartesian_distance_from_bh_center,
+        object_cartesian_distance_from_horizon,
+        object_cartesian_distance_from_photon_ring,
+        fdl_velocity
+    )
+
+def orbiting_object_xp_draw(bh_type, bh_mass, a_star, distance, direction, s_polar_angle, s_azimuthal_angle, stationary_arrow, stationary_text, x_center, y_center, z_center, object):
     #removing arrow and text
     for arrow in stationary_arrow:
         arrow.remove()
 
     stationary_text.remove()
 
-    outer_ev = outer_event_horizon_radius(bh_type, bh_mass, a_star, s_polar_angle, False)
+    object_data = orbiting_object_xp_info_print(bh_type, bh_mass, a_star, distance, direction, s_polar_angle, s_azimuthal_angle)
 
-    photon_ring = photon_sphere_radius(bh_type, bh_mass, a_star, direction, s_polar_angle, False)
+    x_center, y_center, z_center = object_data[0], object_data[1], object_data[2]
+
+    outer_ev = object_data[3]
+
+    object_cartesian_distance_from_bh_center = object_data[4]
+
+    object_cartesian_distance_from_horizon = object_data[5]
+
+    object_cartesian_distance_from_photon_ring = object_data[6]
+
+    if object_cartesian_distance_from_photon_ring > 0:
+        edgecolor = "green"
+    else:
+        edgecolor = "red"
 
     match bh_type:
         case "schw" | "1":
             color = "#e0115f"
             text = "Co-Rotating Object's Orbit Cartesian Radius at"
 
+            fd_text = "No Frame Dragging."
             fda_velocity = 0
             fdl_velocity = 0
         case "kerr" | "2":
@@ -4027,8 +4148,8 @@ def orbiting_object_xp_draw(bh_type, bh_mass, a_star, distance, direction, s_pol
                     text = "Counter-Rotating Object's Orbit Cartesian Radius at"
 
             #adding space-time velocity at object's ring
-            fda_velocity = frame_dragging_angular_velocity(bh_mass, a_star, distance, gravitational_radius(bh_mass), s_polar_angle, False)
-            fdl_velocity = frame_dragging_linear_velocity(bh_mass, a_star, fda_velocity, distance, s_polar_angle)
+            fdl_velocity = object_data[7]
+            fd_text = f"Frame-dragging coordinate linear speed: {speed_unit_manager(fdl_velocity)}."
 
     #object's radial direction
     r = np.array([x_center, y_center, z_center], dtype=float)
@@ -4061,7 +4182,8 @@ def orbiting_object_xp_draw(bh_type, bh_mass, a_star, distance, direction, s_pol
     ax.plot([x_center, x_center + (x_text * (outer_ev / 2))], [y_center, y_center + (y_text * (outer_ev / 2))], [z_center, z_center + (z_text * (outer_ev / 2))], color=color)
 
     #adding the text for object's orbit ring
-    ax.text(x_center + (x_text * (outer_ev / 2)) , y_center + (y_text * (outer_ev / 2)), z_center + (z_text * (outer_ev / 2)), f"{text} {round(np.degrees(s_polar_angle))}°: {length_unit_manager(cartesian_radius(bh_mass, distance, a_star, s_polar_angle))} from the Black Hole's Center.\n and {length_unit_manager(cartesian_radius(bh_mass, distance - outer_ev, a_star, s_polar_angle))} from the Outer Horizon.\n Frame-dragging coordinate linear speed: {speed_unit_manager(fdl_velocity)}", color=color, path_effects=[pe.withStroke(linewidth=2, foreground="white")], fontsize=10)
+    ax.text(x_center + (x_text * (outer_ev / 2)) , y_center + (y_text * (outer_ev / 2)), z_center + (z_text * (outer_ev / 2)), f"{text} {round(np.degrees(s_polar_angle))}°: {length_unit_manager(object_cartesian_distance_from_bh_center)} from the Black Hole's Center.\n and {length_unit_manager(object_cartesian_distance_from_horizon)} from the Outer Horizon.\n {fd_text}",
+            color=color, path_effects=[pe.withStroke(linewidth=2, foreground="white")], fontsize=10)
 
     ax.set_box_aspect([1, 1, 1])
     
