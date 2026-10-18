@@ -61,7 +61,7 @@ plt.show(block=False)
 
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
-print(Fore.MAGENTA + "Black Hole Engine. Version = 14.976" + Fore.RESET)
+print(Fore.MAGENTA + "Black Hole Engine. Version = 15.357" + Fore.RESET)
 print()
 
 def main():
@@ -143,13 +143,13 @@ def main():
 
     #select, print, and construct photon orbitals
     orbital_list = select_photon_orbitals(bh_type)
-    photon_orbitals_info_print(bh_type, bh_mass, a_star, orbital_list[0], orbital_list[1], orbital_list[2], orbital_list[3], orbital_list[4], orbital_list[5], orbital_list[6], orbital_list[7], orbital_list[8], orbital_list[9])
-    photon_orbitals_construct(bh_type, bh_mass, a_star, orbital_list[0], orbital_list[1], orbital_list[2], orbital_list[3], orbital_list[4], orbital_list[5], orbital_list[6], orbital_list[7], orbital_list[8], orbital_list[9])
+    photon_orbitals_info_print(bh_type, bh_mass, a_star, orbital_list[0], orbital_list[1], orbital_list[3], orbital_list[4], orbital_list[5], orbital_list[6], orbital_list[7], orbital_list[9], orbital_list[10], orbital_list[11])
+    photon_orbitals_construct(bh_type, bh_mass, a_star, orbital_list[0], orbital_list[1], orbital_list[2], orbital_list[3], orbital_list[4], orbital_list[5], orbital_list[6], orbital_list[7], orbital_list[8], orbital_list[9], orbital_list[10], orbital_list[11])
 
     #select, print, and construct ISCO orbitals
     orbital_list = select_isco_orbitals(bh_type)
-    isco_orbitals_info_print(bh_type, bh_mass, a_star, orbital_list[0], orbital_list[1], orbital_list[2], orbital_list[3], orbital_list[4], orbital_list[5], orbital_list[6], orbital_list[7], orbital_list[8], orbital_list[9])
-    isco_orbitals_construct(bh_type, bh_mass, a_star, orbital_list[0], orbital_list[1], orbital_list[2], orbital_list[3], orbital_list[4], orbital_list[5], orbital_list[6], orbital_list[7], orbital_list[8], orbital_list[9])
+    isco_orbitals_info_print(bh_type, bh_mass, a_star, orbital_list[0], orbital_list[1], orbital_list[3], orbital_list[4], orbital_list[5], orbital_list[6], orbital_list[7], orbital_list[9], orbital_list[10], orbital_list[11])
+    isco_orbitals_construct(bh_type, bh_mass, a_star, orbital_list[0], orbital_list[1], orbital_list[2], orbital_list[3], orbital_list[4], orbital_list[5], orbital_list[6], orbital_list[7], orbital_list[8], orbital_list[9], orbital_list[10], orbital_list[11])
 
     #select, print, and construct metter/light experience
     xp_list = select_object_experience_type(bh_type, bh_mass, a_star)
@@ -1008,7 +1008,7 @@ def space_time_construct(bh_type, bh_mass, a_star, dimension, flat_st, bent_st, 
 def select_photon_orbitals(bh_type):
     exit_first_loop = 0
     co_photon_ring, co_photon_multiple_rings, co_photon_sphere, counter_photon_ring, counter_photon_multiple_rings, counter_photon_sphere = False, False, False, False, False, False
-    co_photon_ring_angle, co_photon_multiple_rings_count, counter_photon_ring_angle, counter_photon_multiple_rings_count = 0, 0, 0, 0
+    co_photon_ring_polar_angle, co_photon_ring_azimuthal_angle, co_photon_multiple_rings_count, counter_photon_ring_polar_angle, counter_photon_ring_azimuthal_angle, counter_photon_multiple_rings_count = 0, 0, 0, 0, 0, 0
     
     print(Fore.LIGHTYELLOW_EX + "Now Choose which Photon orbitals of this Black Hole you want to show!\n"
     + Fore.LIGHTBLACK_EX + "Enter 1 to show and 0 to not show." + Fore.RESET)
@@ -1047,20 +1047,38 @@ def select_photon_orbitals(bh_type):
                             co_photon_ring = True
                             while True:
                                 try:
-                                    co_photon_ring_angle = int(input(Fore.LIGHTYELLOW_EX + "Enter the Angle.\n"
+                                    co_photon_ring_polar_angle = int(input(Fore.LIGHTYELLOW_EX + "Enter the Polar Angle.\n"
                                     + Fore.LIGHTBLACK_EX + "must be between 0° and 180°.\n"
                                     + Fore.RESET + "==============================\n"
                                     ">>>"))
-                                    if not 0 <= co_photon_ring_angle <= 180:
-                                        print(f"{Fore.LIGHTCYAN_EX} select_photon_orbital says:{Fore.LIGHTRED_EX} Incorrect Angle! must be between '0' and '180'!")
+                                    if not 0 <= co_photon_ring_polar_angle <= 180:
+                                        print(f"{Fore.LIGHTCYAN_EX} select_photon_orbital says:{Fore.LIGHTRED_EX} Incorrect Polar Angle! must be between '0' and '180'!")
                                         print()
                                         continue
                                     else:
-                                        print(f"{Fore.LIGHTGREEN_EX} Photon Ring will draw at the Angle of {co_photon_ring_angle}°! {Fore.RESET}")
+                                        print(f"{Fore.LIGHTGREEN_EX} Photon Ring will draw at the Polar Angle of {co_photon_ring_polar_angle}°! {Fore.RESET}")
                                         print()
                                     break
                                 except ValueError:
-                                        print(f"{Fore.LIGHTCYAN_EX} select_photon_orbital says:{Fore.LIGHTRED_EX} Incorrect Angle! must be between '0' and '180'!")
+                                        print(f"{Fore.LIGHTCYAN_EX} select_photon_orbital says:{Fore.LIGHTRED_EX} Incorrect Polar Angle! must be between '0' and '180'!")
+                                        print()
+                                        continue
+                            while True:
+                                try:
+                                    co_photon_ring_azimuthal_angle = int(input(Fore.LIGHTYELLOW_EX + "Enter the Azimuthal Angle.\n"
+                                    + Fore.LIGHTBLACK_EX + "must be between 0° and 360°.\n"
+                                    + Fore.RESET + "==============================\n"
+                                    ">>>"))
+                                    if not 0 <= co_photon_ring_azimuthal_angle <= 360:
+                                        print(f"{Fore.LIGHTCYAN_EX} select_photon_orbital says:{Fore.LIGHTRED_EX} Incorrect Azimuthal Angle! must be between '0' and '360'!")
+                                        print()
+                                        continue
+                                    else:
+                                        print(f"{Fore.LIGHTGREEN_EX} Photon Ring will draw at the Azimuthal Angle of {co_photon_ring_azimuthal_angle}°! {Fore.RESET}")
+                                        print()
+                                    break
+                                except ValueError:
+                                        print(f"{Fore.LIGHTCYAN_EX} select_photon_orbital says:{Fore.LIGHTRED_EX} Incorrect Azimuthal Angle! must be between '0' and '360'!")
                                         print()
                                         continue
 
@@ -1124,20 +1142,39 @@ def select_photon_orbitals(bh_type):
                             co_photon_ring = True
                             while True:
                                 try:
-                                    co_photon_ring_angle = int(input(Fore.LIGHTYELLOW_EX + "Enter the Co-Photon Angle.\n"
+                                    co_photon_ring_polar_angle = int(input(Fore.LIGHTYELLOW_EX + "Enter the Co-Photon Polar Angle.\n"
                                     + Fore.LIGHTBLACK_EX + "must be between 0° and 180°.\n"
                                     + Fore.RESET + "==============================\n"
                                     ">>>"))
-                                    if not 0 <= co_photon_ring_angle <= 180:
-                                        print(f"{Fore.LIGHTCYAN_EX} select_photon_orbital says:{Fore.LIGHTRED_EX} Incorrect Co-Photon Angle! must be between '0' and '180'!")
+                                    if not 0 <= co_photon_ring_polar_angle <= 180:
+                                        print(f"{Fore.LIGHTCYAN_EX} select_photon_orbital says:{Fore.LIGHTRED_EX} Incorrect Co-Photon Polar Angle! must be between '0' and '180'!")
                                         print()
                                         continue
                                     else:
-                                        print(f"{Fore.LIGHTGREEN_EX} Co-Photon Ring will draw at the Angle of {co_photon_ring_angle}°! {Fore.RESET}")
+                                        print(f"{Fore.LIGHTGREEN_EX} Co-Photon Ring will draw at the Polar Angle of {co_photon_ring_polar_angle}°! {Fore.RESET}")
                                         print()
                                     break
                                 except ValueError:
-                                        print(f"{Fore.LIGHTCYAN_EX} select_photon_orbital says:{Fore.LIGHTRED_EX} Incorrect Co-Photon Angle! must be between '0' and '180'!")
+                                        print(f"{Fore.LIGHTCYAN_EX} select_photon_orbital says:{Fore.LIGHTRED_EX} Incorrect Co-Photon Polar Angle! must be between '0' and '180'!")
+                                        print()
+                                        continue
+
+                            while True:
+                                try:
+                                    co_photon_ring_azimuthal_angle = int(input(Fore.LIGHTYELLOW_EX + "Enter the Co-Photon Azimuthal Angle.\n"
+                                    + Fore.LIGHTBLACK_EX + "must be between 0° and 360°.\n"
+                                    + Fore.RESET + "==============================\n"
+                                    ">>>"))
+                                    if not 0 <= co_photon_ring_azimuthal_angle <= 360:
+                                        print(f"{Fore.LIGHTCYAN_EX} select_photon_orbital says:{Fore.LIGHTRED_EX} Incorrect Co-Photon Azimuthal Angle! must be between '0' and '360'!")
+                                        print()
+                                        continue
+                                    else:
+                                        print(f"{Fore.LIGHTGREEN_EX} Co-Photon Ring will draw at the Azimuthal Angle of {co_photon_ring_azimuthal_angle}°! {Fore.RESET}")
+                                        print()
+                                    break
+                                except ValueError:
+                                        print(f"{Fore.LIGHTCYAN_EX} select_photon_orbital says:{Fore.LIGHTRED_EX} Incorrect Co-Photon Azimuthal Angle! must be between '0' and '360'!")
                                         print()
                                         continue
 
@@ -1199,20 +1236,39 @@ def select_photon_orbitals(bh_type):
                             counter_photon_ring = True
                             while True:
                                 try:
-                                    counter_photon_ring_angle = int(input(Fore.LIGHTYELLOW_EX + "Enter the Counter-Photon Angle.\n"
+                                    counter_photon_ring_polar_angle = int(input(Fore.LIGHTYELLOW_EX + "Enter the Counter-Photon Polar Angle.\n"
                                     + Fore.LIGHTBLACK_EX + "must be between 0° and 180°.\n"
                                     + Fore.RESET + "==============================\n"
                                     ">>>"))
-                                    if not 0 <= counter_photon_ring_angle <= 180:
-                                        print(f"{Fore.LIGHTCYAN_EX} select_photon_orbital says:{Fore.LIGHTRED_EX} Incorrect Counter-Photon Angle! must be between '0' and '180'!")
+                                    if not 0 <= counter_photon_ring_polar_angle <= 180:
+                                        print(f"{Fore.LIGHTCYAN_EX} select_photon_orbital says:{Fore.LIGHTRED_EX} Incorrect Counter-Photon Polar Angle! must be between '0' and '180'!")
                                         print()
                                         continue
                                     else:
-                                        print(f"{Fore.LIGHTGREEN_EX} Counter-Photon Ring will draw at the Angle of {counter_photon_ring_angle}°! {Fore.RESET}")
+                                        print(f"{Fore.LIGHTGREEN_EX} Counter-Photon Ring will draw at the Polar Angle of {counter_photon_ring_polar_angle}°! {Fore.RESET}")
                                         print()
                                     break
                                 except ValueError:
-                                        print(f"{Fore.LIGHTCYAN_EX} select_photon_orbital says:{Fore.LIGHTRED_EX} Incorrect Counter-Photon Angle! must be between '0' and '180'!")
+                                        print(f"{Fore.LIGHTCYAN_EX} select_photon_orbital says:{Fore.LIGHTRED_EX} Incorrect Counter-Photon Polar Angle! must be between '0' and '180'!")
+                                        print()
+                                        continue
+
+                            while True:
+                                try:
+                                    counter_photon_ring_azimuthal_angle = int(input(Fore.LIGHTYELLOW_EX + "Enter the Counter-Photon Azimuthal Angle.\n"
+                                    + Fore.LIGHTBLACK_EX + "must be between 0° and 360°.\n"
+                                    + Fore.RESET + "==============================\n"
+                                    ">>>"))
+                                    if not 0 <= counter_photon_ring_azimuthal_angle <= 360:
+                                        print(f"{Fore.LIGHTCYAN_EX} select_photon_orbital says:{Fore.LIGHTRED_EX} Incorrect Counter-Photon Azimuthal Angle! must be between '0' and '360'!")
+                                        print()
+                                        continue
+                                    else:
+                                        print(f"{Fore.LIGHTGREEN_EX} Counter-Photon Ring will draw at the Azimuthal Angle of {counter_photon_ring_azimuthal_angle}°! {Fore.RESET}")
+                                        print()
+                                    break
+                                except ValueError:
+                                        print(f"{Fore.LIGHTCYAN_EX} select_photon_orbital says:{Fore.LIGHTRED_EX} Incorrect Counter-Photon Azimuthal Angle! must be between '0' and '360'!")
                                         print()
                                         continue
 
@@ -1247,21 +1303,24 @@ def select_photon_orbitals(bh_type):
                     break      
     return (
         co_photon_ring, 
-        co_photon_ring_angle, 
+        co_photon_ring_polar_angle, 
+        co_photon_ring_azimuthal_angle,
         co_photon_multiple_rings, 
         co_photon_multiple_rings_count, 
         co_photon_sphere,
         counter_photon_ring, 
-        counter_photon_ring_angle, 
+        counter_photon_ring_polar_angle,
+        counter_photon_ring_azimuthal_angle,
         counter_photon_multiple_rings, 
         counter_photon_multiple_rings_count, 
         counter_photon_sphere
     )
 
-def photon_orbitals_info_print(bh_type, bh_mass, a_star, co_photon_ring, co_photon_ring_angle, co_photon_multiple_rings, co_photon_multiple_rings_count, co_photon_sphere, counter_photon_ring, counter_photon_ring_angle, counter_photon_multiple_rings, counter_photon_multiple_rings_count, counter_photon_sphere):
-    print()
-    print(Fore.BLUE + "==================================================" + Fore.RESET)
-    print(Fore.RED + "Your Black Hole Photon Orbitals" + Fore.RESET)
+def photon_orbitals_info_print(bh_type, bh_mass, a_star, co_photon_ring, co_photon_ring_polar_angle, co_photon_multiple_rings, co_photon_multiple_rings_count, co_photon_sphere, counter_photon_ring, counter_photon_ring_polar_angle, counter_photon_multiple_rings, counter_photon_multiple_rings_count, counter_photon_sphere):
+    if any([co_photon_ring, co_photon_multiple_rings, co_photon_sphere, counter_photon_ring, counter_photon_multiple_rings, counter_photon_sphere]):
+        print()
+        print(Fore.BLUE + "==================================================" + Fore.RESET)
+        print(Fore.RED + "Your Black Hole Photon Orbitals" + Fore.RESET)
 
     match bh_type:
         case "schw" | "1":
@@ -1269,7 +1328,7 @@ def photon_orbitals_info_print(bh_type, bh_mass, a_star, co_photon_ring, co_phot
             if co_photon_ring == True:
                 print(Fore.LIGHTMAGENTA_EX + f"Single Photon Ring:", end="\n")
 
-                photon_sphere_radius(bh_type, bh_mass, a_star, "", np.radians(co_photon_ring_angle), True)
+                photon_sphere_radius(bh_type, bh_mass, a_star, "", np.radians(co_photon_ring_polar_angle), True)
 
             #multiple photon rings
             elif co_photon_multiple_rings == True:
@@ -1296,7 +1355,7 @@ def photon_orbitals_info_print(bh_type, bh_mass, a_star, co_photon_ring, co_phot
             if co_photon_ring == True:
                 print(Fore.LIGHTMAGENTA_EX + f"Co-Rotating Single Photon Ring:", end="\n")
 
-                photon_sphere_radius(bh_type, bh_mass, a_star, "prograde", np.radians(co_photon_ring_angle), True)
+                photon_sphere_radius(bh_type, bh_mass, a_star, "prograde", np.radians(co_photon_ring_polar_angle), True)
 
             #co-rotating multiple photon rings
             elif co_photon_multiple_rings == True:
@@ -1322,7 +1381,7 @@ def photon_orbitals_info_print(bh_type, bh_mass, a_star, co_photon_ring, co_phot
             if counter_photon_ring == True:
                 print(Fore.LIGHTMAGENTA_EX + f"Counter-Rotating Single Photon Ring:", end="\n")
 
-                photon_sphere_radius(bh_type, bh_mass, a_star, "retrograde", np.radians(counter_photon_ring_angle), True)
+                photon_sphere_radius(bh_type, bh_mass, a_star, "retrograde", np.radians(counter_photon_ring_polar_angle), True)
 
             #counter-rotating photon rings
             if counter_photon_multiple_rings == True:
@@ -1345,19 +1404,19 @@ def photon_orbitals_info_print(bh_type, bh_mass, a_star, co_photon_ring, co_phot
                     photon_sphere_radius(bh_type, bh_mass, a_star, "retrograde", np.radians(angle), True)
                     angle += additional_angle
 
-def photon_orbitals_construct(bh_type, bh_mass, a_star, co_photon_ring, co_photon_ring_angle, co_photon_multiple_rings, co_photon_multiple_rings_count, co_photon_sphere, counter_photon_ring, counter_photon_ring_angle, counter_photon_multiple_rings, counter_photon_multiple_rings_count, counter_photon_sphere):
+def photon_orbitals_construct(bh_type, bh_mass, a_star, co_photon_ring, co_photon_ring_polar_angle, co_photon_ring_azimuthal_angle, co_photon_multiple_rings, co_photon_multiple_rings_count, co_photon_sphere, counter_photon_ring, counter_photon_ring_polar_angle, counter_photon_ring_azimuthal_angle, counter_photon_multiple_rings, counter_photon_multiple_rings_count, counter_photon_sphere):
     match bh_type:
         case "schw" | "1":
             #single photon ring
             if co_photon_ring == True:
-                photon_ring_draw(bh_type, bh_mass, a_star, "", np.radians(co_photon_ring_angle))
+                photon_ring_draw(bh_type, bh_mass, a_star, "", np.radians(co_photon_ring_polar_angle), np.radians(co_photon_ring_azimuthal_angle))
             
             #multiple photon rings
             elif co_photon_multiple_rings == True:
                 additional_angle = 180 / co_photon_multiple_rings_count
                 angle = 0
                 for i in range(co_photon_multiple_rings_count):
-                    photon_ring_draw(bh_type, bh_mass, a_star, "", np.radians(angle))
+                    photon_ring_draw(bh_type, bh_mass, a_star, "", np.radians(angle), np.radians(90))
                     angle += additional_angle
 
             #photon sphere
@@ -1367,14 +1426,14 @@ def photon_orbitals_construct(bh_type, bh_mass, a_star, co_photon_ring, co_photo
         case "kerr" | "2":
             #co-rotating single photon ring
             if co_photon_ring == True:
-                photon_ring_draw(bh_type, bh_mass, a_star, "prograde", np.radians(co_photon_ring_angle))
+                photon_ring_draw(bh_type, bh_mass, a_star, "prograde", np.radians(co_photon_ring_polar_angle), np.radians(co_photon_ring_azimuthal_angle))
 
             #co-rotating multiple photon rings
             elif co_photon_multiple_rings == True:
                 additional_angle = 180 / co_photon_multiple_rings_count
                 angle = 0
                 for i in range(co_photon_multiple_rings_count):
-                    photon_ring_draw(bh_type, bh_mass, a_star, "prograde", np.radians(angle))
+                    photon_ring_draw(bh_type, bh_mass, a_star, "prograde", np.radians(angle), np.radians(90))
                     angle += additional_angle
 
             #co-rotating photon sphere
@@ -1383,7 +1442,7 @@ def photon_orbitals_construct(bh_type, bh_mass, a_star, co_photon_ring, co_photo
 
             #counter-rotating single photon ring
             if counter_photon_ring == True:
-                photon_ring_draw(bh_type, bh_mass, a_star, "retrograde", np.radians(counter_photon_ring_angle))
+                photon_ring_draw(bh_type, bh_mass, a_star, "retrograde", np.radians(counter_photon_ring_polar_angle), np.radians(counter_photon_ring_azimuthal_angle))
 
 
             #counter-rotating multiple photon rings
@@ -1391,7 +1450,7 @@ def photon_orbitals_construct(bh_type, bh_mass, a_star, co_photon_ring, co_photo
                 additional_angle = 180 / counter_photon_multiple_rings_count
                 angle = 0
                 for i in range(counter_photon_multiple_rings_count):
-                    photon_ring_draw(bh_type, bh_mass, a_star, "retrograde", np.radians(angle))
+                    photon_ring_draw(bh_type, bh_mass, a_star, "retrograde", np.radians(angle), np.radians(90))
                     angle += additional_angle
 
             #counter-rotating photon sphere
@@ -1402,7 +1461,7 @@ def photon_orbitals_construct(bh_type, bh_mass, a_star, co_photon_ring, co_photo
 def select_isco_orbitals(bh_type):
     exit_first_loop = 0
     co_isco_ring, co_isco_multiple_rings, co_isco_sphere, counter_isco_ring, counter_isco_multiple_rings, counter_isco_sphere = False, False, False, False, False, False
-    co_isco_ring_angle, co_isco_multiple_rings_count, counter_isco_ring_angle, counter_isco_multiple_rings_count = 0, 0, 0, 0
+    co_isco_ring_polar_angle, co_isco_ring_azimuthal_angle, co_isco_multiple_rings_count, counter_isco_ring_polar_angle, counter_isco_ring_azimuthal_angle, counter_isco_multiple_rings_count = 0, 0, 0, 0, 0, 0
     
     print(Fore.LIGHTYELLOW_EX + "Now Choose which ISCO orbitals of this Black Hole you want to show!\n"
     + Fore.LIGHTBLACK_EX + "Enter 1 to show and 0 to not show." + Fore.RESET)
@@ -1441,20 +1500,38 @@ def select_isco_orbitals(bh_type):
                             co_isco_ring = True
                             while True:
                                 try:
-                                    co_isco_ring_angle = int(input(Fore.LIGHTYELLOW_EX + "Enter the Angle.\n"
+                                    co_isco_ring_polar_angle = int(input(Fore.LIGHTYELLOW_EX + "Enter the Polar Angle.\n"
                                     + Fore.LIGHTBLACK_EX + "must be between 0° and 180°.\n"
                                     + Fore.RESET + "==============================\n"
                                     ">>>"))
-                                    if not 0 <= co_isco_ring_angle <= 180:
-                                        print(f"{Fore.LIGHTCYAN_EX} select_isco_orbital says:{Fore.LIGHTRED_EX} Incorrect Angle! must be between '0' and '180'!")
+                                    if not 0 <= co_isco_ring_polar_angle <= 180:
+                                        print(f"{Fore.LIGHTCYAN_EX} select_isco_orbital says:{Fore.LIGHTRED_EX} Incorrect Polar Angle! must be between '0' and '180'!")
                                         print()
                                         continue
                                     else:
-                                        print(f"{Fore.LIGHTGREEN_EX} ISCO Ring will draw at the Angle of {co_isco_ring_angle}°! {Fore.RESET}")
+                                        print(f"{Fore.LIGHTGREEN_EX} ISCO Ring will draw at the Polar Angle of {co_isco_ring_polar_angle}°! {Fore.RESET}")
                                         print()
                                     break
                                 except ValueError:
                                         print(f"{Fore.LIGHTCYAN_EX} select_isco_orbital says:{Fore.LIGHTRED_EX} Incorrect Angle! must be between '0' and '180'!")
+                                        print()
+                                        continue
+                            while True:
+                                try:
+                                    co_isco_ring_azimuthal_angle = int(input(Fore.LIGHTYELLOW_EX + "Enter the Azimuthal Angle.\n"
+                                    + Fore.LIGHTBLACK_EX + "must be between 0° and 360°.\n"
+                                    + Fore.RESET + "==============================\n"
+                                    ">>>"))
+                                    if not 0 <= co_isco_ring_azimuthal_angle <= 360:
+                                        print(f"{Fore.LIGHTCYAN_EX} select_isco_orbital says:{Fore.LIGHTRED_EX} Incorrect Azimuthal Angle! must be between '0' and '360'!")
+                                        print()
+                                        continue
+                                    else:
+                                        print(f"{Fore.LIGHTGREEN_EX} ISCO Ring will draw at the Azimuthal Angle of {co_isco_ring_azimuthal_angle}°! {Fore.RESET}")
+                                        print()
+                                    break
+                                except ValueError:
+                                        print(f"{Fore.LIGHTCYAN_EX} select_isco_orbital says:{Fore.LIGHTRED_EX} Incorrect Azimuthal Angle! must be between '0' and '360'!")
                                         print()
                                         continue
 
@@ -1518,20 +1595,38 @@ def select_isco_orbitals(bh_type):
                             co_isco_ring = True
                             while True:
                                 try:
-                                    co_isco_ring_angle = int(input(Fore.LIGHTYELLOW_EX + "Enter the Co-ISCO Angle.\n"
+                                    co_isco_ring_polar_angle = int(input(Fore.LIGHTYELLOW_EX + "Enter the Co-ISCO Polar Angle.\n"
                                     + Fore.LIGHTBLACK_EX + "must be between 0° and 180°.\n"
                                     + Fore.RESET + "==============================\n"
                                     ">>>"))
-                                    if not 0 <= co_isco_ring_angle <= 180:
-                                        print(f"{Fore.LIGHTCYAN_EX} select_isco_orbital says:{Fore.LIGHTRED_EX} Incorrect Co-ISCO Angle! must be between '0' and '180'!")
+                                    if not 0 <= co_isco_ring_polar_angle <= 180:
+                                        print(f"{Fore.LIGHTCYAN_EX} select_isco_orbital says:{Fore.LIGHTRED_EX} Incorrect Co-ISCO Polar Angle! must be between '0' and '180'!")
                                         print()
                                         continue
                                     else:
-                                        print(f"{Fore.LIGHTGREEN_EX} Co-ISCO Ring will draw at the Angle of {co_isco_ring_angle}°! {Fore.RESET}")
+                                        print(f"{Fore.LIGHTGREEN_EX} Co-ISCO Ring will draw at the Polar Angle of {co_isco_ring_polar_angle}°! {Fore.RESET}")
                                         print()
                                     break
                                 except ValueError:
-                                        print(f"{Fore.LIGHTCYAN_EX} select_isco_orbital says:{Fore.LIGHTRED_EX} Incorrect Co-ISCO Angle! must be between '0' and '180'!")
+                                        print(f"{Fore.LIGHTCYAN_EX} select_isco_orbital says:{Fore.LIGHTRED_EX} Incorrect Co-ISCO Polar Angle! must be between '0' and '180'!")
+                                        print()
+                                        continue
+                            while True:
+                                try:
+                                    co_isco_ring_azimuthal_angle = int(input(Fore.LIGHTYELLOW_EX + "Enter the Co-ISCO Azimuthal Angle.\n"
+                                    + Fore.LIGHTBLACK_EX + "must be between 0° and 360°.\n"
+                                    + Fore.RESET + "==============================\n"
+                                    ">>>"))
+                                    if not 0 <= co_isco_ring_azimuthal_angle <= 360:
+                                        print(f"{Fore.LIGHTCYAN_EX} select_isco_orbital says:{Fore.LIGHTRED_EX} Incorrect Co-ISCO Azimuthal Angle! must be between '0' and '360'!")
+                                        print()
+                                        continue
+                                    else:
+                                        print(f"{Fore.LIGHTGREEN_EX} Co-ISCO Ring will draw at the Azimuthal Angle of {co_isco_ring_azimuthal_angle}°! {Fore.RESET}")
+                                        print()
+                                    break
+                                except ValueError:
+                                        print(f"{Fore.LIGHTCYAN_EX} select_isco_orbital says:{Fore.LIGHTRED_EX} Incorrect Co-ISCO Azimuthal Angle! must be between '0' and '360'!")
                                         print()
                                         continue
 
@@ -1593,20 +1688,38 @@ def select_isco_orbitals(bh_type):
                             counter_isco_ring = True
                             while True:
                                 try:
-                                    counter_isco_ring_angle = int(input(Fore.LIGHTYELLOW_EX + "Enter the Counter-ISCO Angle.\n"
+                                    counter_isco_ring_polar_angle = int(input(Fore.LIGHTYELLOW_EX + "Enter the Counter-ISCO Polar Angle.\n"
                                     + Fore.LIGHTBLACK_EX + "must be between 0° and 180°.\n"
                                     + Fore.RESET + "==============================\n"
                                     ">>>"))
-                                    if not 0 <= counter_isco_ring_angle <= 180:
-                                        print(f"{Fore.LIGHTCYAN_EX} select_isco_orbital says:{Fore.LIGHTRED_EX} Incorrect Counter-ISCO Angle! must be between '0' and '180'!")
+                                    if not 0 <= counter_isco_ring_polar_angle <= 180:
+                                        print(f"{Fore.LIGHTCYAN_EX} select_isco_orbital says:{Fore.LIGHTRED_EX} Incorrect Counter-ISCO Polar Angle! must be between '0' and '180'!")
                                         print()
                                         continue
                                     else:
-                                        print(f"{Fore.LIGHTGREEN_EX} Counter-ISCO Ring will draw at the Angle of {counter_isco_ring_angle}°! {Fore.RESET}")
+                                        print(f"{Fore.LIGHTGREEN_EX} Counter-ISCO Ring will draw at the Polar Angle of {counter_isco_ring_polar_angle}°! {Fore.RESET}")
                                         print()
                                     break
                                 except ValueError:
-                                        print(f"{Fore.LIGHTCYAN_EX} select_isco_orbital says:{Fore.LIGHTRED_EX} Incorrect Counter-ISCO Angle! must be between '0' and '180'!")
+                                        print(f"{Fore.LIGHTCYAN_EX} select_isco_orbital says:{Fore.LIGHTRED_EX} Incorrect Counter-ISCO Polar Angle! must be between '0' and '180'!")
+                                        print()
+                                        continue
+                            while True:
+                                try:
+                                    counter_isco_ring_azimuthal_angle = int(input(Fore.LIGHTYELLOW_EX + "Enter the Counter-ISCO Azimuthal Angle.\n"
+                                    + Fore.LIGHTBLACK_EX + "must be between 0° and 360°.\n"
+                                    + Fore.RESET + "==============================\n"
+                                    ">>>"))
+                                    if not 0 <= counter_isco_ring_azimuthal_angle <= 360:
+                                        print(f"{Fore.LIGHTCYAN_EX} select_isco_orbital says:{Fore.LIGHTRED_EX} Incorrect Counter-ISCO Azimuthal Angle! must be between '0' and '360'!")
+                                        print()
+                                        continue
+                                    else:
+                                        print(f"{Fore.LIGHTGREEN_EX} Counter-ISCO Ring will draw at the Azimuthal Angle of {counter_isco_ring_azimuthal_angle}°! {Fore.RESET}")
+                                        print()
+                                    break
+                                except ValueError:
+                                        print(f"{Fore.LIGHTCYAN_EX} select_isco_orbital says:{Fore.LIGHTRED_EX} Incorrect Counter-ISCO Azimuthal Angle! must be between '0' and '360'!")
                                         print()
                                         continue
 
@@ -1641,21 +1754,24 @@ def select_isco_orbitals(bh_type):
                     break      
     return (
         co_isco_ring, 
-        co_isco_ring_angle, 
+        co_isco_ring_polar_angle,
+        co_isco_ring_azimuthal_angle, 
         co_isco_multiple_rings, 
         co_isco_multiple_rings_count, 
         co_isco_sphere,
         counter_isco_ring, 
-        counter_isco_ring_angle, 
+        counter_isco_ring_polar_angle, 
+        counter_isco_ring_azimuthal_angle,
         counter_isco_multiple_rings, 
         counter_isco_multiple_rings_count, 
         counter_isco_sphere
     )    
 
-def isco_orbitals_info_print(bh_type, bh_mass, a_star, co_isco_ring, co_isco_ring_angle, co_isco_multiple_rings, co_isco_multiple_rings_count, co_isco_sphere, counter_isco_ring, counter_isco_ring_angle, counter_isco_multiple_rings, counter_isco_multiple_rings_count, counter_isco_sphere):
-    print()
-    print(Fore.BLUE + "==================================================" + Fore.RESET)
-    print(Fore.RED + "Your Black Hole ISCO Orbitals" + Fore.RESET)
+def isco_orbitals_info_print(bh_type, bh_mass, a_star, co_isco_ring, co_isco_ring_polar_angle, co_isco_multiple_rings, co_isco_multiple_rings_count, co_isco_sphere, counter_isco_ring, counter_isco_ring_polar_angle, counter_isco_multiple_rings, counter_isco_multiple_rings_count, counter_isco_sphere):
+    if any([co_isco_ring, co_isco_multiple_rings, co_isco_sphere, counter_isco_ring, counter_isco_multiple_rings, counter_isco_sphere]):
+        print()
+        print(Fore.BLUE + "==================================================" + Fore.RESET)
+        print(Fore.RED + "Your Black Hole ISCO Orbitals" + Fore.RESET)
 
     match bh_type:
         case "schw" | "1":
@@ -1663,7 +1779,7 @@ def isco_orbitals_info_print(bh_type, bh_mass, a_star, co_isco_ring, co_isco_rin
             if co_isco_ring == True:
                 print(Fore.LIGHTMAGENTA_EX + f"Single ISCO Ring:", end="\n")
 
-                isco_sphere_radius(bh_type, bh_mass, a_star, "", np.radians(co_isco_ring_angle), True)
+                isco_sphere_radius(bh_type, bh_mass, a_star, "", np.radians(co_isco_ring_polar_angle), True)
 
             #multiple isco rings
             elif co_isco_multiple_rings == True:
@@ -1690,7 +1806,7 @@ def isco_orbitals_info_print(bh_type, bh_mass, a_star, co_isco_ring, co_isco_rin
             if co_isco_ring == True:
                 print(Fore.LIGHTMAGENTA_EX + f"Co-Rotating Single ISCO Ring:", end="\n")
 
-                isco_sphere_radius(bh_type, bh_mass, a_star, "prograde", np.radians(co_isco_ring_angle), True)
+                isco_sphere_radius(bh_type, bh_mass, a_star, "prograde", np.radians(co_isco_ring_polar_angle), True)
 
             #co-rotating multiple isco rings
             elif co_isco_multiple_rings == True:
@@ -1716,7 +1832,7 @@ def isco_orbitals_info_print(bh_type, bh_mass, a_star, co_isco_ring, co_isco_rin
             if counter_isco_ring == True:
                 print(Fore.LIGHTMAGENTA_EX + f"Counter-Rotating Single ISCO Ring:", end="\n")
 
-                isco_sphere_radius(bh_type, bh_mass, a_star, "retrograde", np.radians(counter_isco_ring_angle), True)
+                isco_sphere_radius(bh_type, bh_mass, a_star, "retrograde", np.radians(counter_isco_ring_polar_angle), True)
 
             #counter-rotating isco rings
             if counter_isco_multiple_rings == True:
@@ -1739,19 +1855,19 @@ def isco_orbitals_info_print(bh_type, bh_mass, a_star, co_isco_ring, co_isco_rin
                     isco_sphere_radius(bh_type, bh_mass, a_star, "retrograde", np.radians(angle), True)
                     angle += additional_angle
 
-def isco_orbitals_construct(bh_type, bh_mass, a_star, co_isco_ring, co_isco_ring_angle, co_isco_multiple_rings, co_isco_multiple_rings_count, co_isco_sphere, counter_isco_ring, counter_isco_ring_angle, counter_isco_multiple_rings, counter_isco_multiple_rings_count, counter_isco_sphere):
+def isco_orbitals_construct(bh_type, bh_mass, a_star, co_isco_ring, co_isco_ring_polar_angle, co_isco_ring_azimuthal_angle, co_isco_multiple_rings, co_isco_multiple_rings_count, co_isco_sphere, counter_isco_ring, counter_isco_ring_polar_angle, counter_isco_ring_azimuthal_angle, counter_isco_multiple_rings, counter_isco_multiple_rings_count, counter_isco_sphere):
     match bh_type:
         case "schw" | "1":
             #single isco ring
             if co_isco_ring == True:
-                isco_ring_draw(bh_type, bh_mass, a_star, "", np.radians(co_isco_ring_angle))
+                isco_ring_draw(bh_type, bh_mass, a_star, "", np.radians(co_isco_ring_polar_angle), np.radians(co_isco_ring_azimuthal_angle))
             
             #multiple isco rings
             elif co_isco_multiple_rings == True:
                 additional_angle = 180 / co_isco_multiple_rings_count
                 angle = 0
                 for i in range(co_isco_multiple_rings_count):
-                    isco_ring_draw(bh_type, bh_mass, a_star, "", np.radians(angle))
+                    isco_ring_draw(bh_type, bh_mass, a_star, "", np.radians(angle), np.radians(90))
                     angle += additional_angle
 
             #isco sphere
@@ -1761,14 +1877,14 @@ def isco_orbitals_construct(bh_type, bh_mass, a_star, co_isco_ring, co_isco_ring
         case "kerr" | "2":
             #co-rotating single isco ring
             if co_isco_ring == True:
-                isco_ring_draw(bh_type, bh_mass, a_star, "prograde", np.radians(co_isco_ring_angle))
+                isco_ring_draw(bh_type, bh_mass, a_star, "prograde", np.radians(co_isco_ring_polar_angle), np.radians(co_isco_ring_azimuthal_angle))
 
             #co-rotating multiple isco rings
             elif co_isco_multiple_rings == True:
                 additional_angle = 180 / co_isco_multiple_rings_count
                 angle = 0
                 for i in range(co_isco_multiple_rings_count):
-                    isco_ring_draw(bh_type, bh_mass, a_star, "prograde", np.radians(angle))
+                    isco_ring_draw(bh_type, bh_mass, a_star, "prograde", np.radians(angle), np.radians(90))
                     angle += additional_angle
 
             #co-rotating isco sphere
@@ -1777,7 +1893,7 @@ def isco_orbitals_construct(bh_type, bh_mass, a_star, co_isco_ring, co_isco_ring
 
             #counter-rotating single isco ring
             if counter_isco_ring == True:
-                isco_ring_draw(bh_type, bh_mass, a_star, "retrograde", np.radians(counter_isco_ring_angle))
+                isco_ring_draw(bh_type, bh_mass, a_star, "retrograde", np.radians(counter_isco_ring_polar_angle), np.radians(counter_isco_ring_azimuthal_angle))
 
 
             #counter-rotating single isco rings
@@ -1785,7 +1901,7 @@ def isco_orbitals_construct(bh_type, bh_mass, a_star, co_isco_ring, co_isco_ring
                 additional_angle = 180 / counter_isco_multiple_rings_count
                 angle = 0
                 for i in range(counter_isco_multiple_rings_count):
-                    isco_ring_draw(bh_type, bh_mass, a_star, "retrograde", np.radians(angle))
+                    isco_ring_draw(bh_type, bh_mass, a_star, "retrograde", np.radians(angle), np.radians(90))
                     angle += additional_angle
 
             #counter-rotating isco sphere
@@ -1979,7 +2095,7 @@ def get_distance(xp_type, bh_type, bh_mass, a_star, s_polar_angle, direction):
 
             #check unit
             if distance_type == "": distance_type = "m"
-            if distance_type not in distance_type_list:
+            if distance_type.lower() not in distance_type_list:
                 print(f" {Fore.LIGHTCYAN_EX} get-distance says: {Fore.LIGHTRED_EX} unknown unit type: {Fore.RESET} {distance_type}")
                 continue
 
@@ -1993,7 +2109,7 @@ def get_distance(xp_type, bh_type, bh_mass, a_star, s_polar_angle, direction):
                 print(f" {Fore.LIGHTCYAN_EX} get-distance says: {Fore.LIGHTYELLOW_EX} Warning! you're at the edge of the Event Horizon!!! {Fore.RESET}")                  
 
             print(f"{Fore.LIGHTGREEN_EX} {second_message}{Fore.RESET} {distance}{distance_type} {Fore.LIGHTGREEN_EX} from the Event Horizon! {Fore.RESET}")
-            distance = (float(distance) * distance_type_list[distance_type]) + outer_event_horizon_radius(bh_type, bh_mass, a_star, "", False)
+            distance = (float(distance) * distance_type_list[distance_type.lower()]) + outer_event_horizon_radius(bh_type, bh_mass, a_star, "", False)
             print(f"{Fore.LIGHTGREEN_EX} Boyer-Lindquist Distance from the Black Hole's Center: {Fore.RESET}{length_unit_manager(distance)}.")
             break
 
@@ -3495,17 +3611,19 @@ def photon_sphere_radius(bh_type, bh_mass, a_star, direction, theta, show):
             case "prograde":
                 phs_radius = min(roots)
                 if show == True:
-                    print(Fore.LIGHTGREEN_EX + f"Co-Rotating Photon Sphere Boyer-Lindquist Radius at {round(np.degrees(theta))}°: {Fore.RESET} {length_unit_manager(phs_radius)}", end="\n")
-                    print(Fore.LIGHTCYAN_EX + f"Co-Rotating Photon Sphere Cartesian Radius at {round(np.degrees(theta))}°: {Fore.RESET} {length_unit_manager(cartesian_radius(bh_mass, phs_radius, a_star, theta))}", end="\n")
+                    print(Fore.LIGHTGREEN_EX + f"Co-Rotating Photon Sphere Max Boyer-Lindquist Radius at {round(np.degrees(theta))}°: {Fore.RESET} {length_unit_manager(phs_radius)}", end="\n")
+                    print(Fore.LIGHTCYAN_EX + f"Co-Rotating Photon Sphere Max Cartesian Radius at {round(np.degrees(theta))}°: {Fore.RESET} {length_unit_manager(cartesian_radius(bh_mass, phs_radius, a_star, theta))}", end="\n")
             case "retrograde":
                 phs_radius = max(roots)
                 if show == True:
-                    print(Fore.LIGHTGREEN_EX + f"Counter-Rotating Photon Sphere Boyer-Lindquist Radius at {round(np.degrees(theta))}°: {Fore.RESET} {length_unit_manager(phs_radius)}", end="\n")
-                    print(Fore.LIGHTCYAN_EX + f"Counter-Rotating Photon Sphere Cartesian Radius at {round(np.degrees(theta))}°: {Fore.RESET} {length_unit_manager(cartesian_radius(bh_mass, phs_radius, a_star, theta))}", end="\n")
+                    print(Fore.LIGHTGREEN_EX + f"Counter-Rotating Photon Sphere Max Boyer-Lindquist Radius at {round(np.degrees(theta))}°: {Fore.RESET} {length_unit_manager(phs_radius)}", end="\n")
+                    print(Fore.LIGHTCYAN_EX + f"Counter-Rotating Photon Sphere Max Cartesian Radius at {round(np.degrees(theta))}°: {Fore.RESET} {length_unit_manager(cartesian_radius(bh_mass, phs_radius, a_star, theta))}", end="\n")
 
         if show == True:
             fda_velocity = frame_dragging_angular_velocity(bh_mass, a_star, phs_radius, gravitational_radius(bh_mass), theta, False)
             fdl_velocity = frame_dragging_linear_velocity(bh_mass, a_star, fda_velocity, phs_radius, theta)
+            if np.isclose(fdl_velocity, 0, atol=1e-6, rtol=0):
+                fdl_velocity = 0.0
             print(Fore.RED + f"Frame-dragging coordinate linear speed at {round(np.degrees(theta))}°: {Fore.RESET} {speed_unit_manager(fdl_velocity)}", end="\n")
 
     if show == True:
@@ -3514,34 +3632,41 @@ def photon_sphere_radius(bh_type, bh_mass, a_star, direction, theta, show):
         print(Fore.RED + "----------------------------------------" + Fore.RESET)
     return phs_radius
 
-def photon_ring_draw(bh_type, bh_mass, a_star, direction, theta):
+def photon_ring_draw(bh_type, bh_mass, a_star, direction, polar_angle, azimuthal_angle):
     #setting the amount of the ring inclination
-    inclination = np.pi / 2 - theta
-
+    inclination = np.pi / 2 - polar_angle
+    
     #a turn around the ring
     phi = np.linspace(0, 2 * np.pi, 100)
 
     if bh_type == "schw" or bh_type == "1":
         #getting radius from photon sphere function
-        r = photon_sphere_radius(bh_type, bh_mass, a_star, "", theta, False)
+        r = photon_sphere_radius(bh_type, bh_mass, a_star, "", polar_angle, False)
 
         #converting angles and radii into coordinates
         x, y, z = cartesian(bh_mass, r, np.pi / 2, phi, a_star)
 
-        #rotate the ring around the x-axis
+        #rotate the ring around x-axis
         y_rot = y * np.cos(inclination) - z * np.sin(inclination)
         z_rot = y * np.sin(inclination) + z * np.cos(inclination)
 
         y = y_rot
         z = z_rot
 
+        # rotate the ring around z-axis
+        x_rot = x * np.cos(azimuthal_angle - np.pi / 2) - y * np.sin(azimuthal_angle - np.pi / 2)
+        y_rot = x * np.sin(azimuthal_angle - np.pi / 2) + y * np.cos(azimuthal_angle - np.pi / 2)
+
+        x = x_rot
+        y = y_rot
+
         text = "Photon Ring Radius at"
 
         #creatig the black hole's photon sphere
         ax.plot(x, y, z, color="red", linewidth=1)
 
-        x_text = r * np.sin(theta)
-        y_text = r * np.cos(theta)
+        x_text = r * np.sin(polar_angle)
+        y_text = r * np.cos(polar_angle)
         z_text = 0
 
         # rotate text position around x-axis
@@ -3551,61 +3676,146 @@ def photon_ring_draw(bh_type, bh_mass, a_star, direction, theta):
         y_text = y_rot
         z_text = z_rot
 
+        # rotate text position around z-axis
+        x_rot = x_text * np.cos(azimuthal_angle - np.pi / 2) - y_text * np.sin(azimuthal_angle - np.pi / 2)
+        y_rot = x_text * np.sin(azimuthal_angle - np.pi / 2) + y_text * np.cos(azimuthal_angle - np.pi / 2)
+
+        x_text = x_rot
+        y_text = y_rot
+
         #drawing the arrow for photon sphere
         ax.plot([x_text, x_text * 1.3], [y_text, y_text * 1.3], [z_text, z_text], color="red", linewidth=1)
 
         #adding the text for photon sphere
-        ax.text(x_text * 1.3, y_text * 1.3, z_text, f"{text} {round(np.degrees(theta))}°: " f"{length_unit_manager(r)}", color="red", path_effects=[pe.withStroke(linewidth=2, foreground="white")], fontsize=10)
+        ax.text(x_text * 1.3, y_text * 1.3, z_text, f"{text} {round(np.degrees(polar_angle))}°: " f"{length_unit_manager(r)}", color="red", path_effects=[pe.withStroke(linewidth=2, foreground="white")], fontsize=10)
     elif bh_type == "kerr" or bh_type == "2":
         match direction:
             case "prograde":
-                text = "Co-Rotating Photon Ring Cartesian Radius at"
+                text = "Co-Rotating Photon Ring Max Cartesian Radius at"
                 color = "red"
             case "retrograde":
-                text = "Counter-Rotating Photon Ring Cartesian Radius at"
+                text = "Counter-Rotating Photon Ring Max Cartesian Radius at"
                 color = "#ff7f3e"
 
         #getting radius from photon sphere function
-        r = photon_sphere_radius(bh_type, bh_mass, a_star, direction, theta, False)
+        r = photon_sphere_radius(bh_type, bh_mass, a_star, direction, polar_angle, False)
 
-        #creating the photon ring
-        if np.isclose(theta, 0) or np.isclose(theta, np.pi):
-            ring_radius = cartesian_radius(bh_mass, r, a_star, theta)
-            x = ring_radius * np.cos(phi)
-            y = np.zeros_like(phi)
-            z = ring_radius * np.sin(phi)
+        #creating the photon ring in Cartesian coordinates
+        ring_radius = cartesian_radius(bh_mass, r, a_star, polar_angle)
+
+        #cartesian radial direction for the specified polar and azimuthal angles
+        x_center, y_center, z_center = cartesian(bh_mass, r, polar_angle, azimuthal_angle, a_star)
+
+        radial_vector = np.array([x_center, y_center, z_center], dtype=float)
+        radial_vector /= np.linalg.norm(radial_vector)
+
+        #normal vector of the selected plane
+        normal = np.array([np.sin(azimuthal_angle - np.pi / 2) * np.sin(np.pi / 2 - polar_angle), -np.cos(azimuthal_angle - np.pi / 2) * np.sin(np.pi / 2 - polar_angle), np.cos(np.pi / 2 - polar_angle)], dtype=float)
+
+        normal /= np.linalg.norm(normal)
+
+        #calculate the photon-region boundary
+        theta_surface = np.linspace(1e-4, np.pi - 1e-4, 100)
+        r_surface = np.array([photon_sphere_radius(bh_type, bh_mass, a_star, direction, t, False) for t in theta_surface])
+
+        a = a_star * gravitational_radius(bh_mass)
+
+        #calculate the intersection between the plane and photon-region boundary
+        horizontal_normal = np.hypot(normal[0], normal[1])
+
+        if horizontal_normal < 1e-8:
+            theta_ring = np.full(100, np.pi / 2)
+            r_equator = np.interp(np.pi / 2, theta_surface, r_surface)
+            r_ring = np.full_like(phi, r_equator)
+
+            x, y, z = cartesian(bh_mass, r_ring, theta_ring, phi, a_star)
+
         else:
-            x ,y, z = cartesian(bh_mass, r, np.pi / 2, phi, a_star)
 
-            #rotate the ring around the x-axis
-            y_rot = y * np.cos(inclination) - z * np.sin(inclination)
-            z_rot = y * np.sin(inclination) + z * np.cos(inclination)
+            plane_angle = np.arctan2(normal[1], normal[0])
 
-            y = y_rot
-            z = z_rot
+            horizontal_normal = np.hypot(normal[0], normal[1])
 
-        #creatig the black hole's photon ring
+            #calculate the plane-intersection ratio
+            def intersection_ratio(theta):
+                r = np.interp(theta, theta_surface, r_surface)
+                denominator = np.sqrt(r**2 + a**2) * np.sin(theta) * horizontal_normal
+                if abs(denominator) < 1e-14:
+                    return np.inf
+                return -normal[2] * r * np.cos(theta) / denominator
+
+            #calculate the intersection ratio at sampled angles
+            plane_value = np.array([intersection_ratio(t) for t in theta_surface])
+
+            #identify angles that intersect the photon-region surface
+            valid = np.abs(plane_value) <= 1.0
+
+            if not np.any(valid):
+                raise ValueError("No intersection found between the plane and photon region.")
+
+            valid_indices = np.where(valid)[0]
+            first_index = valid_indices[0]
+            last_index = valid_indices[-1]
+
+            #refine the first intersection boundary
+            if first_index > 0:
+                theta_start = opt.brentq(lambda t: abs(intersection_ratio(t)) - 1.0, theta_surface[first_index - 1], theta_surface[first_index], xtol=1e-12)
+            else:
+                theta_start = theta_surface[first_index]
+
+            #refine the second intersection boundary
+            if last_index < len(theta_surface) - 1:
+                theta_end = opt.brentq(lambda t: abs(intersection_ratio(t)) - 1.0, theta_surface[last_index], theta_surface[last_index + 1], xtol=1e-12)
+            else:
+                theta_end = theta_surface[last_index]
+
+            #include the exact boundary angles
+            theta_valid = np.concatenate(([theta_start], theta_surface[valid], [theta_end]))
+
+            theta_valid = np.unique(theta_valid)
+
+            #calculate the photon-region radius at each angle
+            r_valid = np.interp(theta_valid, theta_surface, r_surface)
+
+            #calculate the two azimuthal branches
+            ratio = np.array([intersection_ratio(t) for t in theta_valid])
+
+            ratio = np.clip(ratio, -1.0, 1.0)
+            phi_offset = np.arccos(ratio)
+
+            phi_1 = plane_angle + phi_offset
+            phi_2 = plane_angle - phi_offset
+
+            #calculate Cartesian coordinates of both branches
+            x1, y1, z1 = cartesian(bh_mass, r_valid, theta_valid, phi_1, a_star)
+
+            x2, y2, z2 = cartesian(bh_mass, r_valid[::-1], theta_valid[::-1], phi_2[::-1], a_star)
+
+            #combine the branches into one continuous intersection curve
+            x = np.concatenate((x1, x2))
+            y = np.concatenate((y1, y2))
+            z = np.concatenate((z1, z2))
+
+        #draw the photon-ring cross-section
         ax.plot(x, y, z, color=color, linewidth=2)
 
-        #converting angles and radii into coordinates for texts
-        x_text, y_text, z_text = cartesian(bh_mass, r, np.pi / 2, theta * 2, a_star)
+        #find the point on the ring nearest to the selected radial direction
+        points = np.column_stack((x, y, z))
+        label_index = np.argmax(points @ radial_vector)
 
-        # rotate text position around x-axis
-        y_rot = y_text * np.cos(inclination) - z_text * np.sin(inclination)
-        z_rot = y_text * np.sin(inclination) + z_text * np.cos(inclination)
+        x_text, y_text, z_text = points[label_index]
 
-        y_text = y_rot
-        z_text = z_rot
-        
-        #drawing the arrow for photon ring
+        # drawing the arrow for the photon ring
         ax.plot([x_text, x_text * 1.6], [y_text, y_text * 1.6], [z_text, z_text * 1.3], color=color)
 
-        #adding space-time velocity at photon ring
-        fda_velocity = frame_dragging_angular_velocity(bh_mass, a_star, r, gravitational_radius(bh_mass), theta, False)
-        fdl_velocity = frame_dragging_linear_velocity(bh_mass, a_star, fda_velocity, r, theta)
+        # calculating space-time velocity at the photon ring
+        fda_velocity = frame_dragging_angular_velocity(bh_mass, a_star, r, gravitational_radius(bh_mass), polar_angle, False)
+        fdl_velocity = frame_dragging_linear_velocity(bh_mass, a_star, fda_velocity, r, polar_angle)
+        if np.isclose(fdl_velocity, 0, atol=1e-6, rtol=0):
+            fdl_velocity = 0.0
 
-        #adding the text for photon ring
-        ax.text(x_text * 1.6, y_text * 1.6, z_text * 1.3, f"{text} {round(np.degrees(theta))}°: " f"{length_unit_manager(cartesian_radius(bh_mass, r, a_star, theta))} \n Frame-dragging coordinate linear speed: {speed_unit_manager(fdl_velocity)}", color=color, path_effects=[pe.withStroke(linewidth=2, foreground="white")], fontsize=10)
+        # adding the photon ring label
+        ax.text(x_text * 1.6, y_text * 1.6, z_text * 1.3, f"{text} {round(np.degrees(polar_angle))}°: {length_unit_manager(ring_radius)}\nFrame-dragging coordinate linear speed: {speed_unit_manager(fdl_velocity)}", color=color, path_effects=[pe.withStroke(linewidth=2, foreground="white")], fontsize=10)
 
     #show the drawings
     plt.pause(1)
@@ -3664,7 +3874,7 @@ def isco_sphere_radius(bh_type, bh_mass, a_star, direction, theta, show):
     if bh_type in ["schw", "1"]:
         isco_radius = (gravitational_radius(bh_mass) * 6)
         if show == True:
-            print(Fore.LIGHTGREEN_EX + f"Safe Orbital For Matter(ISCO) Radius at {round(np.degrees(theta))}°: {Fore.RESET} {length_unit_manager(isco_radius)}", end="\n")
+            print(Fore.LIGHTGREEN_EX + f"ISCO Sphere Radius at {round(np.degrees(theta))}°: {Fore.RESET} {length_unit_manager(isco_radius)}", end="\n")
             print(Fore.LIGHTRED_EX + f"it's about: {Fore.RESET} {length_unit_manager(isco_radius-outer_ev)} {Fore.LIGHTRED_EX} from the Outer Event Horizon.", end="\n")
             print(Fore.RED + "----------------------------------------" + Fore.RESET)
 
@@ -3721,17 +3931,19 @@ def isco_sphere_radius(bh_type, bh_mass, a_star, direction, theta, show):
             case "prograde":
                 isco_radius = min(roots)
                 if show == True:
-                    print(Fore.LIGHTGREEN_EX + f"Prograde ISCO Boyer-Lindquist Radius at {round(np.degrees(theta))}°: {Fore.RESET} {length_unit_manager(isco_radius)}", end="\n")
-                    print(Fore.LIGHTCYAN_EX + f"Prograde ISCO Cartesian Radius at {round(np.degrees(theta))}°: {Fore.RESET} {length_unit_manager(cartesian_radius(bh_mass, isco_radius, a_star, theta))}", end="\n")
+                    print(Fore.LIGHTGREEN_EX + f"Prograde ISCO Max Boyer-Lindquist Radius at {round(np.degrees(theta))}°: {Fore.RESET} {length_unit_manager(isco_radius)}", end="\n")
+                    print(Fore.LIGHTCYAN_EX + f"Prograde ISCO Max Cartesian Radius at {round(np.degrees(theta))}°: {Fore.RESET} {length_unit_manager(cartesian_radius(bh_mass, isco_radius, a_star, theta))}", end="\n")
             case "retrograde":
                 isco_radius = max(roots)
                 if show == True:
-                    print(Fore.LIGHTGREEN_EX + f"Retrograde ISCO Boyer-Lindquist Radius at {round(np.degrees(theta))}°: {Fore.RESET} {length_unit_manager(isco_radius)}", end="\n")
-                    print(Fore.LIGHTCYAN_EX + f"Retrograde ISCO Cartesian Radius at {round(np.degrees(theta))}°: {Fore.RESET} {length_unit_manager(cartesian_radius(bh_mass, isco_radius, a_star, theta))}", end="\n")
+                    print(Fore.LIGHTGREEN_EX + f"Retrograde ISCO Max Boyer-Lindquist Radius at {round(np.degrees(theta))}°: {Fore.RESET} {length_unit_manager(isco_radius)}", end="\n")
+                    print(Fore.LIGHTCYAN_EX + f"Retrograde ISCO Max Cartesian Radius at {round(np.degrees(theta))}°: {Fore.RESET} {length_unit_manager(cartesian_radius(bh_mass, isco_radius, a_star, theta))}", end="\n")
 
         if show == True:
             fda_velocity = frame_dragging_angular_velocity(bh_mass, a_star, isco_radius, gravitational_radius(bh_mass), theta, False)
             fdl_velocity = frame_dragging_linear_velocity(bh_mass, a_star, fda_velocity, isco_radius, theta)
+            if np.isclose(fdl_velocity, 0, atol=1e-6, rtol=0):
+                fdl_velocity = 0.0
             print(Fore.RED + f"Frame-dragging coordinate linear speed at {round(np.degrees(theta))}°: {Fore.RESET} {speed_unit_manager(fdl_velocity)}", end="\n")
 
     if show == True:
@@ -3741,15 +3953,15 @@ def isco_sphere_radius(bh_type, bh_mass, a_star, direction, theta, show):
 
     return isco_radius
 
-def isco_ring_draw(bh_type, bh_mass, a_star, direction, theta):
+def isco_ring_draw(bh_type, bh_mass, a_star, direction, polar_angle, azimuthal_angle):
     #setting the amount of the ring inclination
-    inclination = np.pi / 2 - theta
+    inclination = np.pi / 2 - polar_angle
 
     #a turn around the ISCO
     phi = np.linspace(0, 2 * np.pi, 100)
     
     #getting radius from ISCO function
-    r = isco_sphere_radius(bh_type, bh_mass, a_star, direction, theta, False)
+    r = isco_sphere_radius(bh_type, bh_mass, a_star, direction, polar_angle, False)
 
     if bh_type in ["schw", "1"]:
         #converting angles and radii into coordinates
@@ -3767,8 +3979,8 @@ def isco_ring_draw(bh_type, bh_mass, a_star, direction, theta):
         #creatig the black hole's ISCO shpere
         ax.plot(x, y, z, color="#4cbb17", linewidth=1)
 
-        x_text = r * np.sin(theta)
-        y_text = r * np.cos(theta)
+        x_text = r * np.sin(polar_angle)
+        y_text = r * np.cos(polar_angle)
         z_text = 0
 
         #rotate text position around x-axis
@@ -3782,60 +3994,114 @@ def isco_ring_draw(bh_type, bh_mass, a_star, direction, theta):
         ax.plot([x_text, x_text * 1.3], [y_text, y_text * 1.3], [z_text, z_text], color="#4cbb17")
 
         #adding the text for ISCO sphere
-        ax.text(x_text * 1.3, y_text * 1.3, z_text, f"{text} {round(np.degrees(theta))}°: " f"{length_unit_manager(r)}", color="#4cbb17", path_effects=[pe.withStroke(linewidth=2, foreground="white")], fontsize=10)
+        ax.text(x_text * 1.3, y_text * 1.3, z_text, f"{text} {round(np.degrees(polar_angle))}°: " f"{length_unit_manager(r)}", color="#4cbb17", path_effects=[pe.withStroke(linewidth=2, foreground="white")], fontsize=10)
     elif bh_type in ["kerr", "2"]:
         match direction:
             case "prograde":
-                text = "Co-Rotating ISCO Cartesian Radius at"
+                text = "Co-Rotating ISCO Max Cartesian Radius at"
                 color = "#4cbb17"
             case "retrograde":
-                text = "Counter-Rotating Cartesian ISCO Radius at"
+                text = "Counter-Rotating Max Cartesian ISCO Radius at"
                 color = "#0b6623"
 
         #creating the ISCO ring
-        if np.isclose(theta, 0) or np.isclose(theta, np.pi):
-            ring_radius = cartesian_radius(bh_mass, r, a_star, theta)
-            x = ring_radius * np.cos(phi)
-            y = np.zeros_like(phi)
-            z = ring_radius * np.sin(phi)
+        #calculate the ISCO surface
+        theta_surface = np.linspace(1e-4, np.pi - 1e-4, 100)
+        r_surface = np.array([isco_sphere_radius(bh_type, bh_mass, a_star, direction, t, False) for t in theta_surface])
+
+        a = a_star * gravitational_radius(bh_mass)
+
+        #normal vector of the selected plane
+        normal = np.array([-np.cos(azimuthal_angle) * np.cos(polar_angle), -np.sin(azimuthal_angle) * np.cos(polar_angle), np.sin(polar_angle)], dtype=float)
+        normal /= np.linalg.norm(normal)
+
+        #calculate the intersection between the plane and ISCO boundary
+        horizontal_normal = np.hypot(normal[0], normal[1])
+
+        if horizontal_normal < 1e-8:
+            theta_ring = np.full_like(phi, np.pi / 2)
+            r_ring = np.full_like(phi, np.interp(np.pi / 2, theta_surface, r_surface))
+            x, y, z = cartesian(bh_mass, r_ring, theta_ring, phi, a_star)
         else:
-            #converting angles and radii into coordinates
-            x, y, z = cartesian(bh_mass, r, np.pi / 2, phi, a_star)
+            plane_angle = np.arctan2(normal[1], normal[0])
 
-            #rotate the ring around the x-axis
-            y_rot = y * np.cos(inclination) - z * np.sin(inclination)
-            z_rot = y * np.sin(inclination) + z * np.cos(inclination)
+            #calculate the plane-intersection ratio
+            def intersection_ratio(theta):
+                radius = np.interp(theta, theta_surface, r_surface)
+                denominator = np.sqrt(radius**2 + a**2) * np.sin(theta) * horizontal_normal
+                if abs(denominator) < 1e-14:
+                    return np.inf
+                return -normal[2] * radius * np.cos(theta) / denominator
 
-            y = y_rot
-            z = z_rot
+            #calculate the intersection ratio at sampled angles
+            plane_value = np.array([intersection_ratio(t) for t in theta_surface])
+
+            #identify angles that intersect the ISCO surface
+            valid = np.abs(plane_value) <= 1.0
+
+            if not np.any(valid):
+                raise ValueError("No intersection found between the plane and ISCO surface.")
+
+            valid_indices = np.where(valid)[0]
+            first_index = valid_indices[0]
+            last_index = valid_indices[-1]
+
+            #refine the first intersection boundary
+            if first_index > 0:
+                theta_start = opt.brentq(lambda t: abs(intersection_ratio(t)) - 1.0, theta_surface[first_index - 1], theta_surface[first_index], xtol=1e-12)
+            else:
+                theta_start = theta_surface[first_index]
+
+            #refine the second intersection boundary
+            if last_index < len(theta_surface) - 1:
+                theta_end = opt.brentq(lambda t: abs(intersection_ratio(t)) - 1.0, theta_surface[last_index], theta_surface[last_index + 1], xtol=1e-12)
+            else:
+                theta_end = theta_surface[last_index]
+
+            #include the exact boundary angles
+            theta_valid = np.unique(np.concatenate(([theta_start], theta_surface[valid], [theta_end])))
+
+            #calculate the ISCO radius at each angle
+            r_valid = np.interp(theta_valid, theta_surface, r_surface)
+
+            #calculate the two azimuthal branches
+            ratio = np.array([intersection_ratio(t) for t in theta_valid])
+            ratio = np.clip(ratio, -1.0, 1.0)
+            phi_offset = np.arccos(ratio)
+            phi_1 = plane_angle + phi_offset
+            phi_2 = plane_angle - phi_offset
+
+            #calculate Cartesian coordinates of both branches
+            x1, y1, z1 = cartesian(bh_mass, r_valid, theta_valid, phi_1, a_star)
+            x2, y2, z2 = cartesian(bh_mass, r_valid[::-1], theta_valid[::-1], phi_2[::-1], a_star)
+
+            #combine the branches into one continuous intersection curve
+            x = np.concatenate((x1, x2))
+            y = np.concatenate((y1, y2))
+            z = np.concatenate((z1, z2))
 
         #creatig the black hole's ISCO radius
         ax.plot(x, y, z, color=color, linewidth=1)
 
-        #converting angles and radii into coordinates for texts
-        x_text, y_text, z_text = cartesian(bh_mass, r, np.pi / 2, theta * 2, a_star)
+        #find the ring point nearest to the selected radial direction
+        target_x, target_y, target_z = cartesian(bh_mass, r, polar_angle, azimuthal_angle, a_star)
+        points = np.column_stack((x, y, z))
+        target = np.array([target_x, target_y, target_z])
+        label_index = np.argmin(np.linalg.norm(points - target, axis=1))
 
-        x_text = r * np.sin(theta)
-        y_text = r * np.cos(theta)
-        z_text = 0
-
-        #rotate text position around x-axis
-        y_rot = y_text * np.cos(inclination) - z_text * np.sin(inclination)
-        z_rot = y_text * np.sin(inclination) + z_text * np.cos(inclination)
-
-        y_text = y_rot
-        z_text = z_rot
+        x_text, y_text, z_text = points[label_index]
 
         #drawing the arrow for ISCO sphere
-        ax.plot([x_text, x_text * 1.3], [y_text, y_text * 1.3], [z_text, z_text], color=color)
-        
+        ax.plot([x_text, x_text * 1.3], [y_text, y_text * 1.3], [z_text, z_text * 1.3], color=color)
+
         #adding space-time velocity at ISCO
-        fda_velocity = frame_dragging_angular_velocity(bh_mass, a_star, r, gravitational_radius(bh_mass), theta, False)
-        fdl_velocity = frame_dragging_linear_velocity(bh_mass, a_star, fda_velocity, r, theta)
+        fda_velocity = frame_dragging_angular_velocity(bh_mass, a_star, r, gravitational_radius(bh_mass), polar_angle, False)
+        fdl_velocity = frame_dragging_linear_velocity(bh_mass, a_star, fda_velocity, r, polar_angle)
+        if np.isclose(fdl_velocity, 0, atol=1e-6, rtol=0):
+            fdl_velocity = 0.0
 
         #adding the text for co-rotating ISCO sphere
-        ax.text(x_text * 1.2, y_text * 1.2, z_text * 1.1, f"{text} {round(np.degrees(theta))}°: " f"{length_unit_manager(cartesian_radius(bh_mass, r, a_star, theta))} \n Frame Dragging Velocity: {speed_unit_manager(fdl_velocity)}", color=color, path_effects=[pe.withStroke(linewidth=2, foreground="white")], fontsize=10)
-
+        ax.text(x_text * 1.3, y_text * 1.3, z_text * 1.3, f"{text} {round(np.degrees(polar_angle))}°: " f"{length_unit_manager(cartesian_radius(bh_mass, r, a_star, polar_angle))} \n Frame Dragging Velocity: {speed_unit_manager(fdl_velocity)}", color=color, path_effects=[pe.withStroke(linewidth=2, foreground="white")], fontsize=10)
     #show the drawings
     plt.pause(1)
 
@@ -3889,24 +4155,27 @@ def isco_sphere_draw(bh_type, bh_mass, a_star, direction):
 #object experience
 def stationary_object_xp_info_print(bh_type, bh_mass, a_star, distance, s_polar_angle, s_azimuthal_angle, show):
     x_center, y_center, z_center = cartesian(bh_mass, distance, s_polar_angle, s_azimuthal_angle, a_star)
-
+    
     outer_ev = outer_event_horizon_radius(bh_type, bh_mass, a_star, s_polar_angle, False)
 
     if show == True:
         print(Fore.LIGHTMAGENTA_EX + f"Outer Event Horizon:", end="\n")
         print(Fore.LIGHTGREEN_EX + f"Outer Event Horizon Boyer-Lindquist Radius at the Polar Angle of {Fore.LIGHTRED_EX}{np.round(np.degrees(s_polar_angle))}°{Fore.LIGHTGREEN_EX}: {Fore.RESET}{length_unit_manager(outer_ev)}.", end="\n")
-        print(Fore.LIGHTCYAN_EX + f"Outer Event Horizon Cartesian Radius at the Polar Angle of {Fore.LIGHTRED_EX}{np.round(np.degrees(s_polar_angle))}°{Fore.LIGHTGREEN_EX}: {Fore.RESET}{length_unit_manager(cartesian_radius(bh_mass, outer_ev, a_star, s_polar_angle))}{Fore.LIGHTGREEN_EX}.", end="\n")
+        print(Fore.LIGHTCYAN_EX + f"Outer Event Horizon Cartesian Radius at the Polar Angle of {Fore.LIGHTRED_EX}{np.round(np.degrees(s_polar_angle))}°{Fore.LIGHTGREEN_EX}: {Fore.RESET}{length_unit_manager(cartesian_radius(bh_mass, outer_ev, a_star, s_polar_angle))}.", end="\n")
         print(Fore.RED + "----------------------------------------" + Fore.RESET)
 
-    outer_er = outer_ergosphere_radius(bh_mass, a_star, s_polar_angle, False)
+    outer_er = outer_ev if bh_type in ["schw", "1"] else outer_ergosphere_radius(bh_mass, a_star, s_polar_angle, False)
 
     if show == True:
         print(Fore.LIGHTMAGENTA_EX + f"Outer Ergosphere:", end="\n")
         print(Fore.LIGHTGREEN_EX + f"Outer Ergosphere Boyer-Lindquist Radius at the Polar Angle of {Fore.LIGHTRED_EX}{np.round(np.degrees(s_polar_angle))}°{Fore.LIGHTGREEN_EX}: {Fore.RESET}{length_unit_manager(outer_er)}.", end="\n")
-        print(Fore.LIGHTCYAN_EX + f"Outer Ergosphere Cartesian Radius the Polar Angle of {Fore.LIGHTRED_EX}{np.round(np.degrees(s_polar_angle))}°{Fore.LIGHTGREEN_EX}: {Fore.RESET}{length_unit_manager(cartesian_radius(bh_mass, outer_er, a_star, s_polar_angle))}", end="\n")
+        print(Fore.LIGHTCYAN_EX + f"Outer Ergosphere Cartesian Radius the Polar Angle of {Fore.LIGHTRED_EX}{np.round(np.degrees(s_polar_angle))}°{Fore.LIGHTGREEN_EX}: {Fore.RESET}{length_unit_manager(cartesian_radius(bh_mass, outer_er, a_star, s_polar_angle))}.", end="\n")
         print(Fore.RED + "----------------------------------------" + Fore.RESET)
 
     object_cartesian_distance_from_bh_center = np.sqrt(x_center**2 + y_center**2 + z_center**2)
+
+    if show == True:
+        print(Fore.LIGHTMAGENTA_EX + f"Object is at the Polar Angle of {Fore.LIGHTRED_EX}{np.round(np.degrees(s_polar_angle))}° {Fore.LIGHTMAGENTA_EX} and the Azimuthal Angle of {Fore.LIGHTRED_EX}{np.round(np.degrees(s_azimuthal_angle))}°{Fore.RESET}.")
 
     if show == True:
         print(Fore.LIGHTCYAN_EX + f"Object's Cartesian Distance from the Black Hole's Center: {Fore.RESET}{length_unit_manager(object_cartesian_distance_from_bh_center)}.", end="\n")
@@ -3925,20 +4194,20 @@ def stationary_object_xp_info_print(bh_type, bh_mass, a_star, distance, s_polar_
         elif object_cartesian_distance_from_ergosphere < 0:
             print(Fore.LIGHTCYAN_EX + f"Object's Cartesian Distance from the Outer Ergosphere:{Fore.RED} NEGATIVE!{Fore.RESET}{length_unit_manager(np.abs(object_cartesian_distance_from_ergosphere))}.", end="\n")
         else:
-            print(Fore.LIGHTCYAN_EX + f"Warning! Object is on the Outer Ergosphere!", end="\n")
+            print(Fore.LIGHTCYAN_EX + f"Warning! Object is on the Surface of the Outer Ergosphere!", end="\n")
         print(Fore.RED + "----------------------------------------" + Fore.RESET)
 
     if show == True:
         if bh_type in ["kerr", "2"] and object_cartesian_distance_from_ergosphere <= 0:
             print(f"{Fore.RED}Object CAN'T be Stationary inside the Black Hole's Ergosphere!!\n"
-                f"{Fore.LIGHTGREEN_EX}Stationary Object at a Distance of {Fore.RESET}{length_unit_manager(object_cartesian_distance_from_bh_center)}{Fore.LIGHTGREEN_EX} from the Black Hole's Center.\n"
+                f"{Fore.LIGHTGREEN_EX}Stationary Object at a Distance of {Fore.RESET}{length_unit_manager(object_cartesian_distance_from_bh_center)}{Fore.LIGHTGREEN_EX} from the Black Hole's Center{Fore.RESET}.\n"
                     f"and {Fore.RESET}{length_unit_manager(object_cartesian_distance_from_horizon)}{Fore.LIGHTGREEN_EX} from the Outer Horizon.")
         else:
-            print(f"{Fore.LIGHTGREEN_EX}Stationary Object Can be at a Distance of {Fore.RESET}{length_unit_manager(object_cartesian_distance_from_bh_center)}{Fore.LIGHTGREEN_EX} from the Black Hole's Center.\n"
-                f"and {Fore.RESET}{length_unit_manager(object_cartesian_distance_from_horizon)}{Fore.LIGHTGREEN_EX} from the Outer Horizon.")
+            print(f"{Fore.LIGHTGREEN_EX}Stationary Object Can be at a Distance of {Fore.RESET}{length_unit_manager(object_cartesian_distance_from_bh_center)}{Fore.LIGHTGREEN_EX} from the Black Hole's Center{Fore.RESET}.\n"
+                f"and {Fore.RESET}{length_unit_manager(object_cartesian_distance_from_horizon)}{Fore.LIGHTGREEN_EX} from the Outer Horizon{Fore.RESET}.")
         print(Fore.RED + "----------------------------------------" + Fore.RESET)
 
-    fda_velocity = frame_dragging_angular_velocity(bh_mass, a_star, distance, gravitational_radius(bh_mass), s_polar_angle, False)
+    fda_velocity = 0 if bh_type in ["schw", "1"] else frame_dragging_angular_velocity(bh_mass, a_star, distance, gravitational_radius(bh_mass), s_polar_angle, False)
     fdl_velocity = frame_dragging_linear_velocity(bh_mass, a_star, fda_velocity, distance, s_polar_angle)
 
     if show == True:
@@ -4020,7 +4289,7 @@ def orbiting_object_xp_info_print(bh_type, bh_mass, a_star, distance, direction,
     if show == True:
         print(Fore.LIGHTMAGENTA_EX + f"Outer Event Horizon:", end="\n")
         print(Fore.LIGHTGREEN_EX + f"Outer Event Horizon Boyer-Lindquist Radius at the Polar Angle of {Fore.LIGHTRED_EX}{np.round(np.degrees(s_polar_angle))}°{Fore.LIGHTGREEN_EX}: {Fore.RESET}{length_unit_manager(outer_ev)}.", end="\n")
-        print(Fore.LIGHTCYAN_EX + f"Outer Event Horizon Cartesian Radius at the Polar Angle of {Fore.LIGHTRED_EX}{np.round(np.degrees(s_polar_angle))}°{Fore.LIGHTGREEN_EX}: {Fore.RESET}{length_unit_manager(cartesian_radius(bh_mass, outer_ev, a_star, s_polar_angle))}{Fore.LIGHTGREEN_EX}.", end="\n")
+        print(Fore.LIGHTCYAN_EX + f"Outer Event Horizon Cartesian Radius at the Polar Angle of {Fore.LIGHTRED_EX}{np.round(np.degrees(s_polar_angle))}°{Fore.LIGHTGREEN_EX}: {Fore.RESET}{length_unit_manager(cartesian_radius(bh_mass, outer_ev, a_star, s_polar_angle))}{Fore.RESET}.", end="\n")
         print(Fore.RED + "----------------------------------------" + Fore.RESET)
 
     photon_ring = photon_sphere_radius(bh_type, bh_mass, a_star, direction, s_polar_angle, False)
@@ -4043,23 +4312,26 @@ def orbiting_object_xp_info_print(bh_type, bh_mass, a_star, distance, direction,
     if show == True:
         print(Fore.LIGHTMAGENTA_EX + f"Photon Ring:", end="\n")
         print(Fore.LIGHTGREEN_EX + f"{photon_text} Ring Boyer-Lindquist Radius at the Polar Angle of {Fore.LIGHTRED_EX}{np.round(np.degrees(s_polar_angle))}°{Fore.LIGHTGREEN_EX}: {Fore.RESET}{length_unit_manager(photon_ring)}.", end="\n")
-        print(Fore.LIGHTCYAN_EX + f"{photon_text} Ring Cartesian Radius the Polar Angle of {Fore.LIGHTRED_EX}{np.round(np.degrees(s_polar_angle))}°{Fore.LIGHTGREEN_EX}: {Fore.RESET}{length_unit_manager(cartesian_radius(bh_mass, photon_ring, a_star, s_polar_angle))}", end="\n")
+        print(Fore.LIGHTCYAN_EX + f"{photon_text} Ring Cartesian Radius the Polar Angle of {Fore.LIGHTRED_EX}{np.round(np.degrees(s_polar_angle))}°{Fore.LIGHTGREEN_EX}: {Fore.RESET}{length_unit_manager(cartesian_radius(bh_mass, photon_ring, a_star, s_polar_angle))}.", end="\n")
         print(Fore.RED + "----------------------------------------" + Fore.RESET)
 
         print(Fore.LIGHTMAGENTA_EX + f"ISCO Ring:", end="\n")
         print(Fore.LIGHTGREEN_EX + f"{isco_text} Ring Boyer-Lindquist Radius at the Polar Angle of {Fore.LIGHTRED_EX}{np.round(np.degrees(s_polar_angle))}°{Fore.LIGHTGREEN_EX}: {Fore.RESET}{length_unit_manager(isco_ring)}.", end="\n")
-        print(Fore.LIGHTCYAN_EX + f"{isco_text} Ring Cartesian Radius the Polar Angle of {Fore.LIGHTRED_EX}{np.round(np.degrees(s_polar_angle))}°{Fore.LIGHTGREEN_EX}: {Fore.RESET}{length_unit_manager(cartesian_radius(bh_mass, isco_ring, a_star, s_polar_angle))}", end="\n")
+        print(Fore.LIGHTCYAN_EX + f"{isco_text} Ring Cartesian Radius the Polar Angle of {Fore.LIGHTRED_EX}{np.round(np.degrees(s_polar_angle))}°{Fore.LIGHTGREEN_EX}: {Fore.RESET}{length_unit_manager(cartesian_radius(bh_mass, isco_ring, a_star, s_polar_angle))}.", end="\n")
         print(Fore.RED + "----------------------------------------" + Fore.RESET)  
 
     object_cartesian_distance_from_bh_center = np.sqrt(x_center**2 + y_center**2 + z_center**2)
 
     if show == True:
-        print(Fore.LIGHTCYAN_EX + f"Object's Cartesian Distance from the Black Hole's Center: {Fore.RESET}{length_unit_manager(object_cartesian_distance_from_bh_center)}.", end="\n")
+        print(Fore.LIGHTMAGENTA_EX + f"Orbiting Object is at the Polar Angle of {Fore.LIGHTRED_EX}{np.round(np.degrees(s_polar_angle))}° {Fore.LIGHTMAGENTA_EX} and the Azimuthal Angle of {Fore.LIGHTRED_EX}{np.round(np.degrees(s_azimuthal_angle))}°{Fore.RESET}.")
+
+    if show == True:
+        print(Fore.LIGHTCYAN_EX + f"Orbiting Object's Cartesian Distance from the Black Hole's Center: {Fore.RESET}{length_unit_manager(object_cartesian_distance_from_bh_center)}.", end="\n")
 
     object_cartesian_distance_from_horizon = object_cartesian_distance_from_bh_center - cartesian_radius(bh_mass, outer_ev, a_star, s_polar_angle)
 
     if show == True:
-        print(Fore.LIGHTCYAN_EX + f"Object's Cartesian Distance from the Outer Event Horizon: {Fore.RESET}{length_unit_manager(object_cartesian_distance_from_horizon)}.", end="\n")
+        print(Fore.LIGHTCYAN_EX + f"Orbiting Object's Cartesian Distance from the Outer Event Horizon: {Fore.RESET}{length_unit_manager(object_cartesian_distance_from_horizon)}.", end="\n")
         print(Fore.RED + "----------------------------------------" + Fore.RESET)
 
     if show == True:
@@ -4074,7 +4346,7 @@ def orbiting_object_xp_info_print(bh_type, bh_mass, a_star, distance, direction,
             f"< {Fore.YELLOW}Object Distance From Horizon: {Fore.RESET}{length_unit_manager(object_cartesian_distance_from_bh_center)} "
             f"< {Fore.LIGHTGREEN_EX}{isco_text} Ring: {Fore.RESET}{length_unit_manager(cartesian_radius(bh_mass, isco_ring, a_star, s_polar_angle))}.", end="\n")
 
-    fda_velocity = frame_dragging_angular_velocity(bh_mass, a_star, distance, gravitational_radius(bh_mass), s_polar_angle, False)
+    fda_velocity = 0 if bh_type in ["schw", "1"] else frame_dragging_angular_velocity(bh_mass, a_star, distance, gravitational_radius(bh_mass), s_polar_angle, False)
     fdl_velocity = frame_dragging_linear_velocity(bh_mass, a_star, fda_velocity, distance, s_polar_angle)
 
     if show == True:
@@ -4121,11 +4393,9 @@ def orbiting_object_xp_draw(bh_type, bh_mass, a_star, distance, direction, s_pol
     match bh_type:
         case "schw" | "1":
             color = "#e0115f"
-            text = ""
-            "Rotating Object's Orbit Cartesian Radius at"
+            text = "Rotating Object's Orbit Cartesian Radius at"
 
             fd_text = "No Frame Dragging."
-            fda_velocity = 0
             fdl_velocity = 0
         case "kerr" | "2":
             match direction:
@@ -4140,27 +4410,45 @@ def orbiting_object_xp_draw(bh_type, bh_mass, a_star, distance, direction, s_pol
             fdl_velocity = object_data[8]
             fd_text = f"Frame-dragging coordinate linear speed: {speed_unit_manager(fdl_velocity)}."
 
-    #object's radial direction
+    # Object's radial direction
     r = np.array([x_center, y_center, z_center], dtype=float)
-    r = r / np.linalg.norm(r)
+    radius = np.linalg.norm(r)
+    r = r / radius
 
-    #first orbital direction
-    u = np.cross(r, [0, 0, 1])
+    # Match the photon ring's angular convention
+    inclination = np.pi / 2 - s_polar_angle
+    azimuth = s_azimuthal_angle - np.pi / 2
 
-    if np.linalg.norm(u) < 1e-6:
-        u = np.cross(r, [1, 0, 0])
+    # Normal vector of the photon ring's plane
+    normal = np.array([np.sin(azimuth) * np.sin(inclination), -np.cos(azimuth) * np.sin(inclination), np.cos(inclination)])
 
+    normal = normal / np.linalg.norm(normal)
+
+    # The object's position must lie in the orbital plane.
+    # Project the plane normal so it is perpendicular to the radial vector.
+    normal = normal - np.dot(normal, r) * r
+
+    if np.linalg.norm(normal) < 1e-6:
+        # At a degenerate orientation, choose a stable perpendicular direction.
+        reference = np.array([1.0, 0.0, 0.0])
+        if abs(np.dot(reference, r)) > 0.9:
+            reference = np.array([0.0, 1.0, 0.0])
+            
+        normal = np.cross(r, reference)
+
+    normal = normal / np.linalg.norm(normal)
+
+    # Construct an orthonormal basis for the orbital plane
+    u = np.cross(normal, r)
     u = u / np.linalg.norm(u)
 
-    #create the object's ring
+    # Create the orbit through the actual object position
     phi = np.linspace(0, 2 * np.pi, 100)
-    radius = np.linalg.norm([x_center, y_center, z_center])
 
     x = radius * (r[0] * np.cos(phi) + u[0] * np.sin(phi))
     y = radius * (r[1] * np.cos(phi) + u[1] * np.sin(phi))
     z = radius * (r[2] * np.cos(phi) + u[2] * np.sin(phi))
 
-    #plot the object's orbit ring
     ax.plot(x, y, z, color=color, linewidth=2)
 
     x_text = x_center / distance
