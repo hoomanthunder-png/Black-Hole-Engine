@@ -61,7 +61,7 @@ plt.show(block=False)
 
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
-print(Fore.MAGENTA + "Black Hole Engine. Version = 15.357" + Fore.RESET)
+print(Fore.MAGENTA + "Black Hole Engine. Version = 15.542" + Fore.RESET)
 print()
 
 def main():
@@ -3577,17 +3577,19 @@ def photon_sphere_radius(bh_type, bh_mass, a_star, direction, theta, show):
 
         roots = []
 
-        #creating 10000 possible radiuses to check if it's the photon ring or not
-        r_possible_values = np.linspace(np.nextafter(outer_event_horizon_radius(bh_type, bh_mass, a_star, theta, False), np.inf), m * 4, 10000)
+        #creating 4000 possible radiuses to check if it's the photon ring or not
+        r_possible_values = np.linspace(np.nextafter(outer_event_horizon_radius(bh_type, bh_mass, a_star, theta, False), np.inf), m * 4, 4000)
 
         tolerance = 1e-10
 
+        f1 = photon_equation(bh_mass, a_star, r_possible_values[0], direction, theta)
+
         for r1, r2 in zip(r_possible_values[:-1], r_possible_values[1:]):
 
-            f1 = photon_equation(bh_mass, a_star, r1, direction, theta)
             f2 = photon_equation(bh_mass, a_star, r2, direction, theta)
         
             if not np.isfinite(f1) or not np.isfinite(f2):
+                f1 = f2
                 continue
 
             if abs(f1) < tolerance:
@@ -3602,10 +3604,13 @@ def photon_sphere_radius(bh_type, bh_mass, a_star, direction, theta, show):
                 )
 
             else:
+                f1 = f2
                 continue
 
             if not roots or abs(root - roots[-1]) > tolerance:
                 roots.append(root)
+
+            f1 = f2
 
         match direction:
             case "prograde":
@@ -3886,21 +3891,23 @@ def isco_sphere_radius(bh_type, bh_mass, a_star, direction, theta, show):
 
         roots = []
 
-        #creating 20000 possible radii to check if it's the ISCO ring or not
-        r_possible_values = np.linspace(np.nextafter(outer_event_horizon_radius(bh_type, bh_mass, a_star, theta, False), np.inf), m * 9, 20000)
+        #creating 12000 possible radii to check if it's the ISCO ring or not
+        r_possible_values = np.linspace(np.nextafter(outer_event_horizon_radius(bh_type, bh_mass, a_star, theta, False), np.inf), m * 9, 12000)
 
         tolerance = 1e-10
 
+        if np.isclose(theta, 0) or np.isclose(theta, np.pi):
+            equation = lambda r: polar_isco_equation(bh_mass, a_star, r)
+        else:
+            equation = lambda r: isco_equation(bh_mass, a_star, r, direction, theta)
+
+        f1 = equation(r_possible_values[0])
+
         for r1, r2 in zip(r_possible_values[:-1], r_possible_values[1:]):
-            match theta:
-                case _ if not np.isclose(theta, 0) and not np.isclose(theta, np.pi):
-                    f1 = isco_equation(bh_mass, a_star, r1, direction, theta)
-                    f2 = isco_equation(bh_mass, a_star, r2, direction, theta)
-                case _ if np.isclose(theta, 0) or np.isclose(theta, np.pi):
-                    f1 = polar_isco_equation(bh_mass, a_star, r1)
-                    f2 = polar_isco_equation(bh_mass, a_star, r2)
+            f2 = equation(r2)
 
             if not np.isfinite(f1) or not np.isfinite(f2):
+                f1 = f2
                 continue
 
             if abs(f1) < tolerance:
@@ -3908,24 +3915,15 @@ def isco_sphere_radius(bh_type, bh_mass, a_star, direction, theta, show):
             elif abs(f2) < tolerance:
                 root = r2
             elif f1 * f2 < 0:
-                match theta:
-                    case _ if not np.isclose(theta, 0) and not np.isclose(theta, np.pi):
-                        root = opt.brentq(
-                            lambda r: isco_equation(bh_mass, a_star, r, direction, theta),
-                            r1,
-                            r2
-                        )
-                    case _ if np.isclose(theta, 0) or np.isclose(theta, np.pi):
-                        root = opt.brentq(
-                            lambda r: polar_isco_equation(bh_mass, a_star, r),
-                            r1,
-                            r2
-                        )
+                root = opt.brentq(equation, r1, r2)
             else:
+                f1 = f2
                 continue
 
             if not roots or abs(root - roots[-1]) > tolerance:
                 roots.append(root)
+
+            f1 = f2
 
         match direction:
             case "prograde":
