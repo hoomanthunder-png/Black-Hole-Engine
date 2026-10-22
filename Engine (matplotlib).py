@@ -61,7 +61,7 @@ plt.show(block=False)
 
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
-print(Fore.MAGENTA + "Black Hole Engine. Version = 15.542" + Fore.RESET)
+print(Fore.MAGENTA + "Black Hole Engine. Version = 15.625" + Fore.RESET)
 print()
 
 def main():
@@ -662,7 +662,7 @@ def select_bh_info(bh_type):
             #inner ergosphere
             while True:
                 inner_ergosphere = input(Fore.LIGHTYELLOW_EX + "Inner Ergosphere?\n"
-                    + Fore.LIGHTBLACK_EX + "The region between the surface of infinite redshift (outer) and the event horizon (inner)!\n"
+                    + Fore.LIGHTBLACK_EX + "The inner ergosphere is the region between the inner event horizon and the inner stationary-limit surface of a rotating Kerr black hole. Inside this region, spacetime is strongly affected by frame dragging, making stationary motion relative to distant observers impossible!\n"
                     + Fore.RESET + "==============================\n"
                     ">>>").strip().lower()
                 if not inner_ergosphere in ["0", "1"]:
@@ -681,7 +681,7 @@ def select_bh_info(bh_type):
             #inner event horizon
             while True:
                 inner_event_horizon = input(Fore.LIGHTYELLOW_EX + "Inner Event Horizon?\n"
-                    + Fore.LIGHTBLACK_EX + "The inner ergosphere is the region between the inner event horizon and the inner stationary-limit surface of a rotating Kerr black hole. Inside this region, spacetime is strongly affected by frame dragging, making stationary motion relative to distant observers impossible!\n"
+                    + Fore.LIGHTBLACK_EX + "The inner event horizon, also known as the Cauchy horizon, is the inner horizon of a rotating Kerr black hole. It marks a boundary beyond which the spacetime geometry prevents initial data from uniquely determining the future evolution of physical fields.\n"
                     + Fore.RESET + "==============================\n"
                     ">>>").strip().lower()
                 if not inner_event_horizon in ["0", "1"]:
@@ -1056,7 +1056,7 @@ def select_photon_orbitals(bh_type):
                                         print()
                                         continue
                                     else:
-                                        print(f"{Fore.LIGHTGREEN_EX} Photon Ring will draw at the Polar Angle of {co_photon_ring_polar_angle}°! {Fore.RESET}")
+                                        print(f"{Fore.LIGHTGREEN_EX} Photon Ring will be drawn at the Polar Angle of {co_photon_ring_polar_angle}°! {Fore.RESET}")
                                         print()
                                     break
                                 except ValueError:
@@ -1074,7 +1074,7 @@ def select_photon_orbitals(bh_type):
                                         print()
                                         continue
                                     else:
-                                        print(f"{Fore.LIGHTGREEN_EX} Photon Ring will draw at the Azimuthal Angle of {co_photon_ring_azimuthal_angle}°! {Fore.RESET}")
+                                        print(f"{Fore.LIGHTGREEN_EX} Photon Ring will be drawn at the Azimuthal Angle of {co_photon_ring_azimuthal_angle}°! {Fore.RESET}")
                                         print()
                                     break
                                 except ValueError:
@@ -1100,6 +1100,25 @@ def select_photon_orbitals(bh_type):
                                     break
                                 except ValueError:
                                         print(f"{Fore.LIGHTCYAN_EX} select_photon_orbital says:{Fore.LIGHTRED_EX} Incorrect Rings Count! must be between '1' and '9'!")
+                                        print()
+                                        continue
+
+                            while True:
+                                try:
+                                    co_photon_ring_azimuthal_angle = int(input(Fore.LIGHTYELLOW_EX + "Enter the Azimuthal Angle.\n"
+                                        + Fore.LIGHTBLACK_EX + "must be between 0° and 360°.\n"
+                                        + Fore.RESET + "==============================\n"
+                                        ">>>"))
+                                    if not 0 <= co_photon_ring_azimuthal_angle <= 360:
+                                        print(f"{Fore.LIGHTCYAN_EX} select_photon_orbital says:{Fore.LIGHTRED_EX} Incorrect Azimuthal Angle! must be between '0' and '360'!")
+                                        print()
+                                        continue
+                                    else:
+                                        print(f"{Fore.LIGHTGREEN_EX} Photon Rings will be drawn at the Azimuthal Angle of {co_photon_ring_azimuthal_angle}°! {Fore.RESET}")
+                                        print()
+                                        break
+                                except ValueError:
+                                        print(f"{Fore.LIGHTCYAN_EX} select_photon_orbital says:{Fore.LIGHTRED_EX} Incorrect Azimuthal Angle! must be between '0' and '360'!")
                                         print()
                                         continue
 
@@ -1151,7 +1170,7 @@ def select_photon_orbitals(bh_type):
                                         print()
                                         continue
                                     else:
-                                        print(f"{Fore.LIGHTGREEN_EX} Co-Photon Ring will draw at the Polar Angle of {co_photon_ring_polar_angle}°! {Fore.RESET}")
+                                        print(f"{Fore.LIGHTGREEN_EX} Co-Photon Ring will be drawn at the Polar Angle of {co_photon_ring_polar_angle}°! {Fore.RESET}")
                                         print()
                                     break
                                 except ValueError:
@@ -1170,7 +1189,7 @@ def select_photon_orbitals(bh_type):
                                         print()
                                         continue
                                     else:
-                                        print(f"{Fore.LIGHTGREEN_EX} Co-Photon Ring will draw at the Azimuthal Angle of {co_photon_ring_azimuthal_angle}°! {Fore.RESET}")
+                                        print(f"{Fore.LIGHTGREEN_EX} Co-Photon Ring will be drawn at the Azimuthal Angle of {co_photon_ring_azimuthal_angle}°! {Fore.RESET}")
                                         print()
                                     break
                                 except ValueError:
@@ -1196,6 +1215,25 @@ def select_photon_orbitals(bh_type):
                                     break
                                 except ValueError:
                                         print(f"{Fore.LIGHTCYAN_EX} select_photon_orbital says:{Fore.LIGHTRED_EX} Incorrect Co-Photon Rings Count! must be between '1' and '9'!")
+                                        print()
+                                        continue
+
+                            while True:
+                                try:
+                                    co_photon_ring_azimuthal_angle = int(input(Fore.LIGHTYELLOW_EX + "Enter the Co-Photon Azimuthal Angle.\n"
+                                    + Fore.LIGHTBLACK_EX + "must be between 0° and 360°.\n"
+                                    + Fore.RESET + "==============================\n"
+                                    ">>>"))
+                                    if not 0 <= co_photon_ring_azimuthal_angle <= 360:
+                                        print(f"{Fore.LIGHTCYAN_EX} select_photon_orbital says:{Fore.LIGHTRED_EX} Incorrect Co-Photon Azimuthal Angle! must be between '0' and '360'!")
+                                        print()
+                                        continue
+                                    else:
+                                        print(f"{Fore.LIGHTGREEN_EX} Co-Photon Rings will be drawn at the Azimuthal Angle of {co_photon_ring_azimuthal_angle}°! {Fore.RESET}")
+                                        print()
+                                    break
+                                except ValueError:
+                                        print(f"{Fore.LIGHTCYAN_EX} select_photon_orbital says:{Fore.LIGHTRED_EX} Incorrect Co-Photon Azimuthal Angle! must be between '0' and '360'!")
                                         print()
                                         continue
 
@@ -1245,7 +1283,7 @@ def select_photon_orbitals(bh_type):
                                         print()
                                         continue
                                     else:
-                                        print(f"{Fore.LIGHTGREEN_EX} Counter-Photon Ring will draw at the Polar Angle of {counter_photon_ring_polar_angle}°! {Fore.RESET}")
+                                        print(f"{Fore.LIGHTGREEN_EX} Counter-Photon Ring will be drawn at the Polar Angle of {counter_photon_ring_polar_angle}°! {Fore.RESET}")
                                         print()
                                     break
                                 except ValueError:
@@ -1264,7 +1302,7 @@ def select_photon_orbitals(bh_type):
                                         print()
                                         continue
                                     else:
-                                        print(f"{Fore.LIGHTGREEN_EX} Counter-Photon Ring will draw at the Azimuthal Angle of {counter_photon_ring_azimuthal_angle}°! {Fore.RESET}")
+                                        print(f"{Fore.LIGHTGREEN_EX} Counter-Photon Ring will be drawn at the Azimuthal Angle of {counter_photon_ring_azimuthal_angle}°! {Fore.RESET}")
                                         print()
                                     break
                                 except ValueError:
@@ -1292,6 +1330,25 @@ def select_photon_orbitals(bh_type):
                                     print(f"{Fore.LIGHTCYAN_EX} select_photon_orbital says:{Fore.LIGHTRED_EX} Incorrect Counter-Photon Rings Count! must be between '1' and '9'!")
                                     print()
                                     continue
+
+                            while True:
+                                try:
+                                    counter_photon_ring_azimuthal_angle = int(input(Fore.LIGHTYELLOW_EX + "Enter the Counter-Photon Azimuthal Angle.\n"
+                                    + Fore.LIGHTBLACK_EX + "must be between 0° and 360°.\n"
+                                    + Fore.RESET + "==============================\n"
+                                    ">>>"))
+                                    if not 0 <= counter_photon_ring_azimuthal_angle <= 360:
+                                        print(f"{Fore.LIGHTCYAN_EX} select_photon_orbital says:{Fore.LIGHTRED_EX} Incorrect Counter-Photon Azimuthal Angle! must be between '0' and '360'!")
+                                        print()
+                                        continue
+                                    else:
+                                        print(f"{Fore.LIGHTGREEN_EX} Counter-Photon Rings will be drawn at the Azimuthal Angle of {counter_photon_ring_azimuthal_angle}°! {Fore.RESET}")
+                                        print()
+                                    break
+                                except ValueError:
+                                        print(f"{Fore.LIGHTCYAN_EX} select_photon_orbital says:{Fore.LIGHTRED_EX} Incorrect Counter-Photon Azimuthal Angle! must be between '0' and '360'!")
+                                        print()
+                                        continue
 
                         case "3":
                             counter_photon_sphere = True
@@ -1416,7 +1473,7 @@ def photon_orbitals_construct(bh_type, bh_mass, a_star, co_photon_ring, co_photo
                 additional_angle = 180 / co_photon_multiple_rings_count
                 angle = 0
                 for i in range(co_photon_multiple_rings_count):
-                    photon_ring_draw(bh_type, bh_mass, a_star, "", np.radians(angle), np.radians(90))
+                    photon_ring_draw(bh_type, bh_mass, a_star, "", np.radians(angle), np.radians(co_photon_ring_azimuthal_angle))
                     angle += additional_angle
 
             #photon sphere
@@ -1433,7 +1490,7 @@ def photon_orbitals_construct(bh_type, bh_mass, a_star, co_photon_ring, co_photo
                 additional_angle = 180 / co_photon_multiple_rings_count
                 angle = 0
                 for i in range(co_photon_multiple_rings_count):
-                    photon_ring_draw(bh_type, bh_mass, a_star, "prograde", np.radians(angle), np.radians(90))
+                    photon_ring_draw(bh_type, bh_mass, a_star, "prograde", np.radians(angle), np.radians(co_photon_ring_azimuthal_angle))
                     angle += additional_angle
 
             #co-rotating photon sphere
@@ -1450,7 +1507,7 @@ def photon_orbitals_construct(bh_type, bh_mass, a_star, co_photon_ring, co_photo
                 additional_angle = 180 / counter_photon_multiple_rings_count
                 angle = 0
                 for i in range(counter_photon_multiple_rings_count):
-                    photon_ring_draw(bh_type, bh_mass, a_star, "retrograde", np.radians(angle), np.radians(90))
+                    photon_ring_draw(bh_type, bh_mass, a_star, "retrograde", np.radians(angle), np.radians(counter_photon_ring_azimuthal_angle))
                     angle += additional_angle
 
             #counter-rotating photon sphere
@@ -1509,13 +1566,14 @@ def select_isco_orbitals(bh_type):
                                         print()
                                         continue
                                     else:
-                                        print(f"{Fore.LIGHTGREEN_EX} ISCO Ring will draw at the Polar Angle of {co_isco_ring_polar_angle}°! {Fore.RESET}")
+                                        print(f"{Fore.LIGHTGREEN_EX} ISCO Ring will be drawn at the Polar Angle of {co_isco_ring_polar_angle}°! {Fore.RESET}")
                                         print()
                                     break
                                 except ValueError:
                                         print(f"{Fore.LIGHTCYAN_EX} select_isco_orbital says:{Fore.LIGHTRED_EX} Incorrect Angle! must be between '0' and '180'!")
                                         print()
                                         continue
+                                
                             while True:
                                 try:
                                     co_isco_ring_azimuthal_angle = int(input(Fore.LIGHTYELLOW_EX + "Enter the Azimuthal Angle.\n"
@@ -1527,7 +1585,7 @@ def select_isco_orbitals(bh_type):
                                         print()
                                         continue
                                     else:
-                                        print(f"{Fore.LIGHTGREEN_EX} ISCO Ring will draw at the Azimuthal Angle of {co_isco_ring_azimuthal_angle}°! {Fore.RESET}")
+                                        print(f"{Fore.LIGHTGREEN_EX} ISCO Ring will be drawn at the Azimuthal Angle of {co_isco_ring_azimuthal_angle}°! {Fore.RESET}")
                                         print()
                                     break
                                 except ValueError:
@@ -1553,6 +1611,25 @@ def select_isco_orbitals(bh_type):
                                     break
                                 except ValueError:
                                         print(f"{Fore.LIGHTCYAN_EX} select_isco_orbital says:{Fore.LIGHTRED_EX} Incorrect Rings Count! must be between '1' and '9'!")
+                                        print()
+                                        continue
+
+                            while True:
+                                try:
+                                    co_isco_ring_azimuthal_angle = int(input(Fore.LIGHTYELLOW_EX + "Enter the Azimuthal Angle.\n"
+                                    + Fore.LIGHTBLACK_EX + "must be between 0° and 360°.\n"
+                                    + Fore.RESET + "==============================\n"
+                                    ">>>"))
+                                    if not 0 <= co_isco_ring_azimuthal_angle <= 360:
+                                        print(f"{Fore.LIGHTCYAN_EX} select_isco_orbital says:{Fore.LIGHTRED_EX} Incorrect Azimuthal Angle! must be between '0' and '360'!")
+                                        print()
+                                        continue
+                                    else:
+                                        print(f"{Fore.LIGHTGREEN_EX} ISCO Rings will be drawn at the Azimuthal Angle of {co_isco_ring_azimuthal_angle}°! {Fore.RESET}")
+                                        print()
+                                    break
+                                except ValueError:
+                                        print(f"{Fore.LIGHTCYAN_EX} select_isco_orbital says:{Fore.LIGHTRED_EX} Incorrect Azimuthal Angle! must be between '0' and '360'!")
                                         print()
                                         continue
 
@@ -1604,13 +1681,14 @@ def select_isco_orbitals(bh_type):
                                         print()
                                         continue
                                     else:
-                                        print(f"{Fore.LIGHTGREEN_EX} Co-ISCO Ring will draw at the Polar Angle of {co_isco_ring_polar_angle}°! {Fore.RESET}")
+                                        print(f"{Fore.LIGHTGREEN_EX} Co-ISCO Ring will be drawn at the Polar Angle of {co_isco_ring_polar_angle}°! {Fore.RESET}")
                                         print()
                                     break
                                 except ValueError:
                                         print(f"{Fore.LIGHTCYAN_EX} select_isco_orbital says:{Fore.LIGHTRED_EX} Incorrect Co-ISCO Polar Angle! must be between '0' and '180'!")
                                         print()
                                         continue
+                                
                             while True:
                                 try:
                                     co_isco_ring_azimuthal_angle = int(input(Fore.LIGHTYELLOW_EX + "Enter the Co-ISCO Azimuthal Angle.\n"
@@ -1622,7 +1700,7 @@ def select_isco_orbitals(bh_type):
                                         print()
                                         continue
                                     else:
-                                        print(f"{Fore.LIGHTGREEN_EX} Co-ISCO Ring will draw at the Azimuthal Angle of {co_isco_ring_azimuthal_angle}°! {Fore.RESET}")
+                                        print(f"{Fore.LIGHTGREEN_EX} Co-ISCO Ring will be drawn at the Azimuthal Angle of {co_isco_ring_azimuthal_angle}°! {Fore.RESET}")
                                         print()
                                     break
                                 except ValueError:
@@ -1648,6 +1726,25 @@ def select_isco_orbitals(bh_type):
                                     break
                                 except ValueError:
                                         print(f"{Fore.LIGHTCYAN_EX} select_isco_orbital says:{Fore.LIGHTRED_EX} Incorrect Co-ISCO Rings Count! must be between '1' and '9'!")
+                                        print()
+                                        continue
+
+                            while True:
+                                try:
+                                    co_isco_ring_azimuthal_angle = int(input(Fore.LIGHTYELLOW_EX + "Enter the Co-ISCO Azimuthal Angle.\n"
+                                    + Fore.LIGHTBLACK_EX + "must be between 0° and 360°.\n"
+                                    + Fore.RESET + "==============================\n"
+                                    ">>>"))
+                                    if not 0 <= co_isco_ring_azimuthal_angle <= 360:
+                                        print(f"{Fore.LIGHTCYAN_EX} select_isco_orbital says:{Fore.LIGHTRED_EX} Incorrect Co-ISCO Azimuthal Angle! must be between '0' and '360'!")
+                                        print()
+                                        continue
+                                    else:
+                                        print(f"{Fore.LIGHTGREEN_EX} Co-ISCO Rings will be drawn at the Azimuthal Angle of {co_isco_ring_azimuthal_angle}°! {Fore.RESET}")
+                                        print()
+                                    break
+                                except ValueError:
+                                        print(f"{Fore.LIGHTCYAN_EX} select_isco_orbital says:{Fore.LIGHTRED_EX} Incorrect Co-ISCO Azimuthal Angle! must be between '0' and '360'!")
                                         print()
                                         continue
 
@@ -1697,13 +1794,14 @@ def select_isco_orbitals(bh_type):
                                         print()
                                         continue
                                     else:
-                                        print(f"{Fore.LIGHTGREEN_EX} Counter-ISCO Ring will draw at the Polar Angle of {counter_isco_ring_polar_angle}°! {Fore.RESET}")
+                                        print(f"{Fore.LIGHTGREEN_EX} Counter-ISCO Ring will be drawn at the Polar Angle of {counter_isco_ring_polar_angle}°! {Fore.RESET}")
                                         print()
                                     break
                                 except ValueError:
                                         print(f"{Fore.LIGHTCYAN_EX} select_isco_orbital says:{Fore.LIGHTRED_EX} Incorrect Counter-ISCO Polar Angle! must be between '0' and '180'!")
                                         print()
                                         continue
+                                
                             while True:
                                 try:
                                     counter_isco_ring_azimuthal_angle = int(input(Fore.LIGHTYELLOW_EX + "Enter the Counter-ISCO Azimuthal Angle.\n"
@@ -1715,7 +1813,7 @@ def select_isco_orbitals(bh_type):
                                         print()
                                         continue
                                     else:
-                                        print(f"{Fore.LIGHTGREEN_EX} Counter-ISCO Ring will draw at the Azimuthal Angle of {counter_isco_ring_azimuthal_angle}°! {Fore.RESET}")
+                                        print(f"{Fore.LIGHTGREEN_EX} Counter-ISCO Ring will be drawn at the Azimuthal Angle of {counter_isco_ring_azimuthal_angle}°! {Fore.RESET}")
                                         print()
                                     break
                                 except ValueError:
@@ -1743,6 +1841,25 @@ def select_isco_orbitals(bh_type):
                                     print(f"{Fore.LIGHTCYAN_EX} select_isco_orbital says:{Fore.LIGHTRED_EX} Incorrect Counter-ISCO Rings Count! must be between '1' and '9'!")
                                     print()
                                     continue
+
+                            while True:
+                                try:
+                                    counter_isco_ring_azimuthal_angle = int(input(Fore.LIGHTYELLOW_EX + "Enter the Counter-ISCO Azimuthal Angle.\n"
+                                    + Fore.LIGHTBLACK_EX + "must be between 0° and 360°.\n"
+                                    + Fore.RESET + "==============================\n"
+                                    ">>>"))
+                                    if not 0 <= counter_isco_ring_azimuthal_angle <= 360:
+                                        print(f"{Fore.LIGHTCYAN_EX} select_isco_orbital says:{Fore.LIGHTRED_EX} Incorrect Counter-ISCO Azimuthal Angle! must be between '0' and '360'!")
+                                        print()
+                                        continue
+                                    else:
+                                        print(f"{Fore.LIGHTGREEN_EX} Counter-ISCO Rings will be drawn at the Azimuthal Angle of {counter_isco_ring_azimuthal_angle}°! {Fore.RESET}")
+                                        print()
+                                    break
+                                except ValueError:
+                                        print(f"{Fore.LIGHTCYAN_EX} select_isco_orbital says:{Fore.LIGHTRED_EX} Incorrect Counter-ISCO Azimuthal Angle! must be between '0' and '360'!")
+                                        print()
+                                        continue
 
                         case "3":
                             counter_isco_sphere = True
@@ -1867,7 +1984,7 @@ def isco_orbitals_construct(bh_type, bh_mass, a_star, co_isco_ring, co_isco_ring
                 additional_angle = 180 / co_isco_multiple_rings_count
                 angle = 0
                 for i in range(co_isco_multiple_rings_count):
-                    isco_ring_draw(bh_type, bh_mass, a_star, "", np.radians(angle), np.radians(90))
+                    isco_ring_draw(bh_type, bh_mass, a_star, "", np.radians(angle), np.radians(co_isco_ring_azimuthal_angle))
                     angle += additional_angle
 
             #isco sphere
@@ -1884,7 +2001,7 @@ def isco_orbitals_construct(bh_type, bh_mass, a_star, co_isco_ring, co_isco_ring
                 additional_angle = 180 / co_isco_multiple_rings_count
                 angle = 0
                 for i in range(co_isco_multiple_rings_count):
-                    isco_ring_draw(bh_type, bh_mass, a_star, "prograde", np.radians(angle), np.radians(90))
+                    isco_ring_draw(bh_type, bh_mass, a_star, "prograde", np.radians(angle), np.radians(co_isco_ring_azimuthal_angle))
                     angle += additional_angle
 
             #co-rotating isco sphere
@@ -1901,7 +2018,7 @@ def isco_orbitals_construct(bh_type, bh_mass, a_star, co_isco_ring, co_isco_ring
                 additional_angle = 180 / counter_isco_multiple_rings_count
                 angle = 0
                 for i in range(counter_isco_multiple_rings_count):
-                    isco_ring_draw(bh_type, bh_mass, a_star, "retrograde", np.radians(angle), np.radians(90))
+                    isco_ring_draw(bh_type, bh_mass, a_star, "retrograde", np.radians(angle), np.radians(counter_isco_ring_azimuthal_angle))
                     angle += additional_angle
 
             #counter-rotating isco sphere
@@ -3274,8 +3391,7 @@ def twist_space_time(bh_mass, a_star, x, y, z, flat_lines, surfaces, dimension, 
         match dimension:
             case "2D":
                 #removing surface
-                for surface in surfaces:
-                    surface.remove()
+                surfaces.remove()
 
                 flat_lines = []
                 surface = []
@@ -3658,7 +3774,7 @@ def photon_ring_draw(bh_type, bh_mass, a_star, direction, polar_angle, azimuthal
         y = y_rot
         z = z_rot
 
-        # rotate the ring around z-axis
+        #rotate the ring around z-axis
         x_rot = x * np.cos(azimuthal_angle - np.pi / 2) - y * np.sin(azimuthal_angle - np.pi / 2)
         y_rot = x * np.sin(azimuthal_angle - np.pi / 2) + y * np.cos(azimuthal_angle - np.pi / 2)
 
@@ -3674,14 +3790,14 @@ def photon_ring_draw(bh_type, bh_mass, a_star, direction, polar_angle, azimuthal
         y_text = r * np.cos(polar_angle)
         z_text = 0
 
-        # rotate text position around x-axis
+        #rotate text position around x-axis
         y_rot = y_text * np.cos(inclination) - z_text * np.sin(inclination)
         z_rot = y_text * np.sin(inclination) + z_text * np.cos(inclination)
 
         y_text = y_rot
         z_text = z_rot
 
-        # rotate text position around z-axis
+        #rotate text position around z-axis
         x_rot = x_text * np.cos(azimuthal_angle - np.pi / 2) - y_text * np.sin(azimuthal_angle - np.pi / 2)
         y_rot = x_text * np.sin(azimuthal_angle - np.pi / 2) + y_text * np.cos(azimuthal_angle - np.pi / 2)
 
@@ -3972,6 +4088,13 @@ def isco_ring_draw(bh_type, bh_mass, a_star, direction, polar_angle, azimuthal_a
         y = y_rot
         z = z_rot
 
+        # rotate the ring around z-axis
+        x_rot = x * np.cos(azimuthal_angle - np.pi / 2) - y * np.sin(azimuthal_angle - np.pi / 2)
+        y_rot = x * np.sin(azimuthal_angle - np.pi / 2) + y * np.cos(azimuthal_angle - np.pi / 2)
+
+        x = x_rot
+        y = y_rot
+
         text = "The ISCO Radius at"
 
         #creatig the black hole's ISCO shpere
@@ -3987,6 +4110,13 @@ def isco_ring_draw(bh_type, bh_mass, a_star, direction, polar_angle, azimuthal_a
 
         y_text = y_rot
         z_text = z_rot
+
+        #rotate text position around z-axis
+        x_rot = x_text * np.cos(azimuthal_angle - np.pi / 2) - y_text * np.sin(azimuthal_angle - np.pi / 2)
+        y_rot = x_text * np.sin(azimuthal_angle - np.pi / 2) + y_text * np.cos(azimuthal_angle - np.pi / 2)
+
+        x_text = x_rot
+        y_text = y_rot
 
         #drawing the arrow for ISCO sphere
         ax.plot([x_text, x_text * 1.3], [y_text, y_text * 1.3], [z_text, z_text], color="#4cbb17")
