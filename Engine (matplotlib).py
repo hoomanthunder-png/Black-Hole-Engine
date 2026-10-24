@@ -1,12 +1,31 @@
+import NumberLex, warnings, csv, os, numpy as np, scipy.optimize as opt
+from colorama import Fore
+
+#matplotlib liberary
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d.art3d import Line3DCollection
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+import matplotlib.patheffects as pe
+fig = plt.figure()
+ax = fig.add_subplot(111, projection="3d")
+fig.subplots_adjust(left=0, right=1, bottom=0, top=1)
+plt.show(block=False)
+
+warnings.filterwarnings("ignore", category=RuntimeWarning)
+
+print(Fore.MAGENTA + "Black Hole Engine. Version = 15.841" + Fore.RESET)
+print()
+
+bh_name = ""
 sun = 1989000000000000000000000000000
 c = 299792458
 c2 = 89875517873681764
 c3 = 26944002417373989539335912
 gravitational_constant = 0.000000000066743
-pi = 3.1415926
 time_type_list = {"s" : "Second", "m" : "Minute", "h" : "Hour", "d" : "Day", "mn" : "Month", "y" : "Year"}
 distance_type_list = {"m" : 1, "km" : 1000, "au" : 149597870700, "ly" : 9460730000000000}
 velocity_type_list = {"cm/s" : 0.01, "m/s" : 1, "sos/s" : 343, "km/s" : 1000, "c/s" : 299792458}
+
 length_type_list = [
     (1, lambda l: l * 1000, "MilliMeter"),
     (1000, lambda l: l, "Meter"),
@@ -42,32 +61,15 @@ color_hex_list = [
     (15, "F"),
 ]
 
-from math import sqrt, cos, acos, radians, sin
-import NumberLex
-import warnings
-import numpy as np
-from colorama import Fore
-import scipy.optimize as opt
-
-#matplotlib liberary
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d.art3d import Line3DCollection
-from mpl_toolkits.mplot3d.art3d import Poly3DCollection
-import matplotlib.patheffects as pe
-fig = plt.figure()
-ax = fig.add_subplot(111, projection="3d")
-fig.subplots_adjust(left=0, right=1, bottom=0, top=1)
-plt.show(block=False)
-
-warnings.filterwarnings("ignore", category=RuntimeWarning)
-
-print(Fore.MAGENTA + "Black Hole Engine. Version = 15.625" + Fore.RESET)
-print()
-
 def main():
+    global bh_name
     exit_first_loop = 0
     time_type = ""
     distance_type = ""
+    #getting black hole name
+    bh_name = input(Fore.LIGHTYELLOW_EX + "Your Black Hole Name:\n"
+    + Fore.RESET + "==============================\n"
+    ">>>").strip()
     #getting black hole type
     while True:
         bh_type = input(Fore.LIGHTYELLOW_EX + "Black Hole Type (schw or kerr):\n"
@@ -381,8 +383,7 @@ def main():
 
 #getting and checking the black hole's 3 first important parameters
 def type_check(bh_type):
-    bh_type.lower()
-    bh_type.strip()
+    bh_type = bh_type.lower().strip()
 
     if not bh_type in ["schw", "1", "kerr", "2"]:
         print(f"{Fore.LIGHTCYAN_EX} type_check says:{Fore.LIGHTRED_EX} Incorrect bh_type! must be 'schw | 1' or 'kerr | 2' !")
@@ -739,32 +740,45 @@ def select_bh_info(bh_type):
             return singularity, inner_ergosphere, inner_event_horizon, outer_event_horizon, outer_ergosphere
         
 def black_hole_info_print(bh_type, bh_mass, solar_mass, a_star, singularity, inner_ergosphere, inner_horizon, outer_horizon, outer_ergosphere):
-
     print()
     print(Fore.BLUE + "==================================================" + Fore.RESET)
     print(Fore.RED + "Your Black Hole Statistics" + Fore.RESET)
+    #name
+    print(Fore.LIGHTGREEN_EX + "Name: " + Fore.RESET + bh_name, end="\n")
+    statistics("Name", bh_name)
 
     match bh_type:
         case "schw" | "1":
             #type
             print(Fore.LIGHTGREEN_EX + "Type: " + Fore.RESET + "Non-Spinning Black Hole", end="\n")
+            statistics("Type", "Non-Spinning Black Hole")
 
             #dimensionless spin parameter
             print(Fore.LIGHTGREEN_EX + f"Dimensionless Spin Parameter: {Fore.RESET} 0", end="\n")
+            statistics("Dimensionless Spin Parameter", "0")
 
             #printing in solar mass
-            print(Fore.LIGHTGREEN_EX + f"Sun Mass: {Fore.RESET} {solar_mass:,} Solar Masses!", end="\n")
+            print(Fore.LIGHTGREEN_EX + f"Solar Mass: {Fore.RESET} {solar_mass:,} Solar Masses!", end="\n")
+            statistics("Solar Mass", f"{solar_mass:,}")
+
             if solar_mass < 1:
                 print(Fore.LIGHTBLACK_EX + f"Less than one Solar Mass!" + Fore.RESET)
+                statistics("Solar Mass in Words", "Less than one Solar Mass!")
             else:
                 print(Fore.LIGHTBLACK_EX + f"{NumberLex.mag_caller(str(solar_mass))} Solar Masses!" + Fore.RESET)
+                statistics("Solar Mass in Words", NumberLex.mag_caller(str(solar_mass)))
 
             #printing in kilograms
             print(Fore.LIGHTGREEN_EX + f"SI Mass{Fore.RESET} {bh_mass:,} KG!", end="\n")
+            statistics("SI Mass", f"{bh_mass:,} KG!")
+
             if bh_mass < 1:
                 print(Fore.LIGHTBLACK_EX + f"Less than one KiloGram!" + Fore.RESET)
+                statistics("SI Mass in Words", "Less than one KiloGram!")
             else:
                 print(Fore.LIGHTBLACK_EX + f"{NumberLex.mag_caller(str(bh_mass))} KiloGrams!" + Fore.RESET)
+                statistics("SI Mass in Words", NumberLex.mag_caller(str(bh_mass)))
+
             print(Fore.RED + "----------------------------------------" + Fore.RESET)
 
             #singularity
@@ -2583,7 +2597,7 @@ def inner_ergosphere_draw(bh_mass, a_star):
 
 def inner_event_horizon_radius(bh_type, bh_mass, a_star, theta, show):
     if bh_type == "kerr" or bh_type == "2":
-        inner_radius = gravitational_radius(bh_mass) * (1 - sqrt(1 - pow(a_star,2)))
+        inner_radius = gravitational_radius(bh_mass) * (1 - np.sqrt(1 - pow(a_star,2)))
         if show == True:
             print(Fore.LIGHTGREEN_EX + f"Inner Event Horizon Boyer-Lindquist Radius: {Fore.RESET} {length_unit_manager(inner_radius)}", end="\n")
             print(Fore.LIGHTGREEN_EX + f"Inner Event Horizon Boyer-Lindquist Diameter: {Fore.RESET} {length_unit_manager(inner_radius * 2)}", end="\n")
@@ -2658,7 +2672,7 @@ def outer_event_horizon_radius(bh_type, bh_mass, a_star, theta, show):
                 print(Fore.RED + "----------------------------------------" + Fore.RESET)
 
         case "kerr" | "2":  
-            outer_radius = gravitational_radius(bh_mass) * (1 + sqrt(1 - pow(a_star,2)))
+            outer_radius = gravitational_radius(bh_mass) * (1 + np.sqrt(1 - pow(a_star,2)))
             if show == True:
                 print(Fore.LIGHTGREEN_EX + f"Outer Event Horizon Boyer-Lindquist Radius: {Fore.RESET} {length_unit_manager(outer_radius)}", end="\n")
                 print(Fore.LIGHTGREEN_EX + f"Outer Event Horizon Boyer-Lindquist Diameter: {Fore.RESET} {length_unit_manager(outer_radius * 2)}", end="\n")  
@@ -2778,10 +2792,10 @@ def outer_ergosphere_draw(bh_type, bh_mass, a_star):
         ax.plot_surface(x, y, z, color="deepskyblue", edgecolor="#2572A1", alpha=0.1, linewidth=0.1)
 
         #setting base for the coordinates of the polar informations
-        polar_limit = outer_ergosphere_radius(bh_mass, a_star, radians(0), False)
+        polar_limit = outer_ergosphere_radius(bh_mass, a_star, np.radians(0), False)
 
         #setting base for the coordinates of the equatorial informations
-        equatorial_limit = cartesian_radius(bh_mass, outer_ergosphere_radius(bh_mass, a_star, radians(90), False), a_star, np.radians(90))
+        equatorial_limit = cartesian_radius(bh_mass, outer_ergosphere_radius(bh_mass, a_star, np.radians(90), False), a_star, np.radians(90))
 
         angle = np.radians(200)
 
@@ -3120,7 +3134,10 @@ def bend_space_time(x ,y, z, flat_lines, surfaces, dimension, event_horizon_radi
                 flat_lines.append(line)    
 
             #drawing and saving the surface
-            surface = ax.plot_surface(x, y, z, color="#192841", linewidth=0, alpha=0.2, shade=False)  
+            surface = ax.plot_surface(x, y, z, color="#192841", linewidth=0, alpha=0.2, shade=False)
+
+            surfaces = surface  
+            
         case "3D":
             line_alpha = 0.1
             surface_alpha = 0.01
@@ -4643,7 +4660,7 @@ def orbital_angular_velocity(bh_mass, a_star, gravitational_radius, distance, di
     dimensionless_radius = distance / gravitational_radius
     match a_star:
         case 0:
-            omega = sqrt((gravitational_constant * bh_mass) / (distance ** 3))
+            omega = np.sqrt((gravitational_constant * bh_mass) / (distance ** 3))
         case _:
             match direction:
                 case "prograde":
@@ -4657,14 +4674,14 @@ def orbital_angular_velocity(bh_mass, a_star, gravitational_radius, distance, di
     return omega
 
 def orbital_period(orbital_angular_velocity, show):
-    orbital_period = (2 * pi) / abs(orbital_angular_velocity)
+    orbital_period = (2 * np.pi) / abs(orbital_angular_velocity)
     if show == True:
         print(Fore.LIGHTGREEN_EX + f"Orbital Period: {Fore.LIGHTBLUE_EX} {orbital_period:,.6f} Second/s" + Fore.RESET)
         print()
     return orbital_period
 
 def orbital_frequensy(orbital_angular_velocity, show):
-    orbital_frequensy = abs(orbital_angular_velocity) / (2 * pi)
+    orbital_frequensy = abs(orbital_angular_velocity) / (2 * np.pi)
     if show == True:
         print(Fore.LIGHTGREEN_EX + f"Rotation rate around the Black Hole about: {Fore.LIGHTBLUE_EX} {orbital_frequensy:,.6f} Times per Second!" + Fore.RESET)
         print()
@@ -4685,7 +4702,7 @@ def local_orbital_velocity(a_star, event_horizon_radius, orbital_angular_velocit
     else:
         dimensionless_radius = distance / gravitational_radius
         if a_star == 0:
-            v_local = c * sqrt(1 / (dimensionless_radius - 2))  
+            v_local = c * np.sqrt(1 / (dimensionless_radius - 2))  
         else:
             #Ω*
             omega_rel = orbital_angular_velocity - frame_dragging_angular_velocity
@@ -4696,11 +4713,11 @@ def local_orbital_velocity(a_star, event_horizon_radius, orbital_angular_velocit
             #A*
             A_metric_star = ((((dimensionless_radius ** 2) + (a_star ** 2)) ** 2) - ((a_star ** 2) * (delta_star)))
             #α*
-            lapse_function = sqrt((delta_star * sigma_star) / A_metric_star)
+            lapse_function = np.sqrt((delta_star * sigma_star) / A_metric_star)
             #gΦΦ*
             g_phiphi_star = A_metric_star / sigma_star
 
-            v_local = abs(((omega_rel) * (gravitational_radius) * sqrt(g_phiphi_star)) / (lapse_function))
+            v_local = abs(((omega_rel) * (gravitational_radius) * np.sqrt(g_phiphi_star)) / (lapse_function))
 
             if show == True:
                 print(Fore.LIGHTGREEN_EX + f"Real Orbital Velocity: {Fore.LIGHTBLUE_EX} {v_local:,.6f} Meter/s per Second!" + Fore.RESET)
@@ -4714,16 +4731,16 @@ def time_dilation(a_star, near_type, direction, bh_mass, distance, time, theta):
 
     #schwarschild black hole and stationary
     if a_star == 0 and near_type == "stationary":
-        universe_time = time / (sqrt(1 - (2 * gravitational_constant * bh_mass) / (distance * c2)))
+        universe_time = time / (np.sqrt(1 - (2 * gravitational_constant * bh_mass) / (distance * c2)))
 
     #schwarschild black hole and orbiting
     elif a_star == 0 and near_type == "orbiting":
         if distance >= r_isco(a_star, "", gravitational_radius(bh_mass),"", False):
             print(Fore.LIGHTBLUE_EX + "You're outside of ISCO. Stable Circular Orbit." + Fore.RESET)
-            universe_time = time / (sqrt(1 - (3 * gravitational_constant * bh_mass) / (distance * c2)))
+            universe_time = time / (np.sqrt(1 - (3 * gravitational_constant * bh_mass) / (distance * c2)))
         elif photon_sphere_radius(a_star, gravitational_radius(bh_mass), False) <= distance < r_isco(a_star, "", gravitational_radius(bh_mass),"", False):
             print(Fore.LIGHTRED_EX + "You're Between Photon Sphere and ISCO. Circular Orbit Exists but is Unstable!!" + Fore.RESET)
-            universe_time = time / (sqrt(1 - (3 * gravitational_constant * bh_mass) / (distance * c2)))
+            universe_time = time / (np.sqrt(1 - (3 * gravitational_constant * bh_mass) / (distance * c2)))
         else:
             return False
 
@@ -4731,7 +4748,7 @@ def time_dilation(a_star, near_type, direction, bh_mass, distance, time, theta):
     elif a_star != 0 and near_type == "stationary":
         rho = (distance * c2) / (gravitational_constant * bh_mass)
         if distance >= outer_ergosphere_radius(bh_mass, a_star, theta, False):
-            universe_time = time / (sqrt(1 - (2 * rho) / ((rho ** 2) + (a_star ** 2) * (cos(radians(theta))) ** 2) ))
+            universe_time = time / (np.sqrt(1 - (2 * rho) / ((rho ** 2) + (a_star ** 2) * (np.cos(np.radians(theta))) ** 2) ))
         else:
             return False
 
@@ -4744,7 +4761,7 @@ def time_dilation(a_star, near_type, direction, bh_mass, distance, time, theta):
         #calculating kerr metric parameters(dimensionless)
 
         #Σ*
-        sigma_star = (dimensionless_radius ** 2) + ((a_star ** 2) * (cos(radians(theta)) ** 2))
+        sigma_star = (dimensionless_radius ** 2) + ((a_star ** 2) * (np.cos(np.radians(theta)) ** 2))
 
         #calculating kerr metric components
 
@@ -4752,17 +4769,17 @@ def time_dilation(a_star, near_type, direction, bh_mass, distance, time, theta):
         time_component = -(1 - ((2 * dimensionless_radius) / sigma_star))
 
         #gtΦ*
-        time_azimuthal_component = -(((2 * a_star) * (dimensionless_radius) * (sin(radians(theta)) ** 2)) / (sigma_star))
+        time_azimuthal_component = -(((2 * a_star) * (dimensionless_radius) * (np.sin(np.radians(theta)) ** 2)) / (sigma_star))
 
         #gΦΦ*
-        azimuthal_azimuthal_component = (sin(radians(theta)) ** 2) * ((dimensionless_radius ** 2) + (a_star ** 2) + (((2 * (a_star ** 2)) * (dimensionless_radius) * (sin(radians(theta)) ** 2)) / (sigma_star)))
+        azimuthal_azimuthal_component = (np.sin(np.radians(theta)) ** 2) * ((dimensionless_radius ** 2) + (a_star ** 2) + (((2 * (a_star ** 2)) * (dimensionless_radius) * (np.sin(np.radians(theta)) ** 2)) / (sigma_star)))
 
         #Ω*
         omega_star = orbital_angular_velocity(bh_mass, a_star, gravitational_radius(bh_mass), distance, direction, False) * ((gravitational_constant * bh_mass) / c3)
 
         ##calculating time dilation 
         try:
-            universe_time = time / sqrt(-((time_component) + (2 * time_azimuthal_component * omega_star) + (azimuthal_azimuthal_component * (omega_star ** 2))))
+            universe_time = time / np.sqrt(-((time_component) + (2 * time_azimuthal_component * omega_star) + (azimuthal_azimuthal_component * (omega_star ** 2))))
         except ValueError or ZeroDivisionError:
             print(Fore.RED + "This Orbit Is Not Physically Possible. No Timelike Circular Path Exists in This Region!" + Fore.RESET)
             return False
@@ -4784,6 +4801,22 @@ def time_dilation(a_star, near_type, direction, bh_mass, distance, time, theta):
                     print(Fore.RED + "You're inside the Outer Photon Sphere! No Stable Massive Circular Orbit!!! results are Hypothetical." + Fore.RESET)
 
     return universe_time
+
+#statistics saver
+def statistics(fieldname, value):
+    data = []
+    file_exists = os.path.exists(f"{bh_name}.csv")
+
+    if file_exists:
+        with open(f"{bh_name}.csv", "r") as bh_read:
+            data.extend(row for row in csv.DictReader(bh_read))
+
+    with open(f"{bh_name}.csv", "w", newline='') as bh_write:
+        saver = csv.DictWriter(bh_write, fieldnames=["Name", "Type", "Dimensionless Spin Parameter", "Solar Mass","Solar Mass in Words", "SI Mass", "SI Mass in Words"])
+        if not file_exists:
+            saver.writeheader()
+        for row in data:
+            print(row)
 
 #calling the engine
 if __name__ == "__main__":
