@@ -13,7 +13,7 @@ plt.show(block=False)
 
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
-print(Fore.MAGENTA + "Black Hole Engine. Version = 15.841" + Fore.RESET)
+print(Fore.MAGENTA + "Black Hole Engine. Version = 15.842" + Fore.RESET)
 print()
 
 bh_name = ""
@@ -2874,9 +2874,9 @@ def space_time_draw(dimension, event_horizon_radius):
             surface_facecolor = "#586B8B"
 
             #setting limits
-            x = np.linspace(-limit, limit, 20)
-            y = np.linspace(-limit, limit, 20)
-            z = np.linspace(-limit, limit, 20)
+            x = np.linspace(-limit, limit, 15)
+            y = np.linspace(-limit, limit, 15)
+            z = np.linspace(-limit, limit, 15)
 
             #meshing dots
             x, y, z = np.meshgrid(x, y, z)
@@ -3458,6 +3458,7 @@ def twist_space_time(bh_mass, a_star, x, y, z, flat_lines, surfaces, dimension, 
 
                 #calculating frame dragging angular velocity for each point and saving them into an array of omegas
                 omega = frame_dragging_angular_velocity(bh_mass, a_star, r, gravitational_radius(bh_mass), np.pi / 2, False)
+                omega[r == 0] = 0
 
                 #calculating twist strength for each omega
                 twist_strength = omega * event_horizon_radius / c * 5
@@ -3476,13 +3477,13 @@ def twist_space_time(bh_mass, a_star, x, y, z, flat_lines, surfaces, dimension, 
 
                 red_strength_quotient = twist_color_strength // 16
 
-                red_strength_remainder = twist_color_strength % 16
+                red_strength_reminder = twist_color_strength % 16
 
                 for i in range(twist_color_strength.shape[0]):
                     for j in range(twist_color_strength.shape[1]):
                         for k in range(twist_color_strength.shape[2]):
                             r1[i][j][k] = color_hex_list[int(red_strength_quotient[i][j][k])][1]
-                            r2[i][j][k] = color_hex_list[int(red_strength_remainder[i][j][k])][1]
+                            r2[i][j][k] = color_hex_list[int(red_strength_reminder[i][j][k])][1]
 
                             line_colors[i][j][k] = "#" + (r1)[i][j][k] + (r2)[i][j][k] + "1010"
                             surface_facecolors[i][j][k] = "#243A" + (r1)[i][j][k] + (r2)[i][j][k]
