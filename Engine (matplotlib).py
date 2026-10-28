@@ -13,10 +13,11 @@ plt.show(block=False)
 
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
-print(Fore.MAGENTA + "Black Hole Engine. Version = 15.842" + Fore.RESET)
+print(Fore.MAGENTA + "Black Hole Engine. Version = 16" + Fore.RESET)
 print()
 
 bh_name = ""
+bh_data = []
 sun = 1989000000000000000000000000000
 c = 299792458
 c2 = 89875517873681764
@@ -756,17 +757,19 @@ def black_hole_info_print(bh_type, bh_mass, solar_mass, a_star, singularity, inn
             #dimensionless spin parameter
             print(Fore.LIGHTGREEN_EX + f"Dimensionless Spin Parameter: {Fore.RESET} 0", end="\n")
             statistics("Dimensionless Spin Parameter", "0")
+            print(Fore.LIGHTGREEN_EX + f"Black Hole Velocity at the Equator:{Fore.RESET} 0", end="\n")
+            statistics("Black Hole Velocity at the Equator", "0")
 
             #printing in solar mass
             print(Fore.LIGHTGREEN_EX + f"Solar Mass: {Fore.RESET} {solar_mass:,} Solar Masses!", end="\n")
-            statistics("Solar Mass", f"{solar_mass:,}")
+            statistics("Solar Mass", f"{solar_mass:,} Solar Masses!")
 
             if solar_mass < 1:
                 print(Fore.LIGHTBLACK_EX + f"Less than one Solar Mass!" + Fore.RESET)
                 statistics("Solar Mass in Words", "Less than one Solar Mass!")
             else:
                 print(Fore.LIGHTBLACK_EX + f"{NumberLex.mag_caller(str(solar_mass))} Solar Masses!" + Fore.RESET)
-                statistics("Solar Mass in Words", NumberLex.mag_caller(str(solar_mass)))
+                statistics("Solar Mass in Words", f"{NumberLex.mag_caller(str(solar_mass))} Solar Masses!")
 
             #printing in kilograms
             print(Fore.LIGHTGREEN_EX + f"SI Mass{Fore.RESET} {bh_mass:,} KG!", end="\n")
@@ -777,7 +780,7 @@ def black_hole_info_print(bh_type, bh_mass, solar_mass, a_star, singularity, inn
                 statistics("SI Mass in Words", "Less than one KiloGram!")
             else:
                 print(Fore.LIGHTBLACK_EX + f"{NumberLex.mag_caller(str(bh_mass))} KiloGrams!" + Fore.RESET)
-                statistics("SI Mass in Words", NumberLex.mag_caller(str(bh_mass)))
+                statistics("SI Mass in Words", f"{NumberLex.mag_caller(str(bh_mass))} KiloGrams!")
 
             print(Fore.RED + "----------------------------------------" + Fore.RESET)
 
@@ -797,25 +800,34 @@ def black_hole_info_print(bh_type, bh_mass, solar_mass, a_star, singularity, inn
         case "kerr" | "2":
             #type
             print(Fore.LIGHTGREEN_EX + "Type: " + Fore.RESET + "Spinning Black Hole", end="\n")
+            statistics("Type", "Spinning Black Hole")
 
             #dimensionless spin parameter
             print(Fore.LIGHTGREEN_EX + f"Dimensionless Spin Parameter: {Fore.RESET} {a_star}", end="\n")
             velocity = spin_parser(str(a_star))[1]
+            statistics("Dimensionless Spin Parameter", a_star)
             print(Fore.LIGHTGREEN_EX + f"Black Hole Velocity at the Equator: {Fore.RESET} {speed_unit_manager(velocity)}", end="\n")
+            statistics("Black Hole Velocity at the Equator", f"{speed_unit_manager(velocity)}")
 
             #printing in solar mass
-            print(Fore.LIGHTGREEN_EX + f"Sun Mass: {Fore.RESET} {solar_mass:,} Solar Masses!", end="\n")
+            print(Fore.LIGHTGREEN_EX + f"Solar Mass: {Fore.RESET} {solar_mass:,} Solar Masses!", end="\n")
+            statistics("Solar Mass", f"{solar_mass:,} Solar Masses!")
             if solar_mass < 1:
                 print(Fore.LIGHTBLACK_EX + f"Less than one Solar Mass!" + Fore.RESET)
+                statistics("Solar Mass in Words", "Less than one Solar Mass!")
             else:
                 print(Fore.LIGHTBLACK_EX + f"{NumberLex.mag_caller(str(solar_mass))} Solar Masses!" + Fore.RESET)
+                statistics("Solar Mass in Words", f"{NumberLex.mag_caller(str(solar_mass))} Solar Masses!")
 
             #printing in kilograms
             print(Fore.LIGHTGREEN_EX + f"SI Mass: {Fore.RESET} {bh_mass:,} KG!", end="\n")
+            statistics("SI Mass", f"{bh_mass:,} KG!")
             if bh_mass < 1:
                 print(Fore.LIGHTBLACK_EX + f"Less than one KiloGram!" + Fore.RESET)
+                statistics("SI Mass in Words", "Less than one KiloGram!")
             else:
                 print(Fore.LIGHTBLACK_EX + f"{NumberLex.mag_caller(str(bh_mass))} KiloGrams!" + Fore.RESET)
+                statistics("SI Mass in Words", f"{NumberLex.mag_caller(str(bh_mass))} KiloGrams!")
             print(Fore.RED + "----------------------------------------" + Fore.RESET)
 
             #singularity
@@ -4805,19 +4817,26 @@ def time_dilation(a_star, near_type, direction, bh_mass, distance, time, theta):
 
 #statistics saver
 def statistics(fieldname, value):
-    data = []
+    global bh_data
     file_exists = os.path.exists(f"{bh_name}.csv")
+    fieldnames = ["Name", "Type", "Dimensionless Spin Parameter","Black Hole Velocity at the Equator", "Solar Mass","Solar Mass in Words", "SI Mass", "SI Mass in Words"]
 
     if file_exists:
         with open(f"{bh_name}.csv", "r") as bh_read:
-            data.extend(row for row in csv.DictReader(bh_read))
+            bh_data.extend(row for row in csv.DictReader(bh_read))
 
+    if not bh_data == []:
+        bh_data[0][fieldname] = value
+    else:
+        bh_data.append({})
+        bh_data[0][fieldname] = value
+    
     with open(f"{bh_name}.csv", "w", newline='') as bh_write:
-        saver = csv.DictWriter(bh_write, fieldnames=["Name", "Type", "Dimensionless Spin Parameter", "Solar Mass","Solar Mass in Words", "SI Mass", "SI Mass in Words"])
-        if not file_exists:
-            saver.writeheader()
-        for row in data:
-            print(row)
+        saver = csv.DictWriter(bh_write, fieldnames=fieldnames)
+        saver.writeheader()
+        saver.writerows(bh_data)
+        bh_data = []
+
 
 #calling the engine
 if __name__ == "__main__":
