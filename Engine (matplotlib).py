@@ -13,11 +13,12 @@ plt.show(block=False)
 
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
-print(Fore.MAGENTA + "Black Hole Engine. Version = 16" + Fore.RESET)
+print(Fore.MAGENTA + "Black Hole Engine. Version = 16.346" + Fore.RESET)
 print()
 
 bh_name = ""
 bh_data = []
+fieldnames = []
 sun = 1989000000000000000000000000000
 c = 299792458
 c2 = 89875517873681764
@@ -63,7 +64,7 @@ color_hex_list = [
 ]
 
 def main():
-    global bh_name
+    global bh_name, bh_type_global
     exit_first_loop = 0
     time_type = ""
     distance_type = ""
@@ -2446,6 +2447,7 @@ def polar_isco_equation(bh_mass, a_star, radius):
 #black hole main structure
 def gravitational_radius(bh_mass):
     gravitational_radius = (bh_mass * gravitational_constant) / c2
+    statistics("Gravitational Radius", length_unit_manager(gravitational_radius))
     return gravitational_radius
 
 def singularity_radius(bh_mass, a_star, show):
@@ -2454,14 +2456,19 @@ def singularity_radius(bh_mass, a_star, show):
             singularity_radius = 0
             if show == True:
                 print(Fore.LIGHTYELLOW_EX + f"Point Singularity at the Very Center with no Radius! {Fore.RESET}", end="\n")
-                print(Fore.RED + "----------------------------------------" + Fore.RESET)  
+                print(Fore.RED + "----------------------------------------" + Fore.RESET)
+                statistics("Point Singularity Radius", 0)  
         case _:
             singularity_radius = a_star * gravitational_radius(bh_mass)
             if show == True:
                 print(Fore.LIGHTYELLOW_EX + f"Ring Singularity Boyer-Lindquist Radius: {Fore.RESET} 0!", end="\n")
                 print("         ********************            ")
+                statistics("Ring Singularity Boyer-Lindquist Radius", 0)
+
                 print(Fore.LIGHTYELLOW_EX + f"Ring Singularity Cartesian Radius: {Fore.RESET} {length_unit_manager(singularity_radius)} \n {Fore.LIGHTYELLOW_EX} Diameter: {Fore.RESET} {length_unit_manager(singularity_radius * 2)}!" + Fore.RESET)  
                 print(Fore.RED + "----------------------------------------" + Fore.RESET) 
+                statistics("Ring Singularity Cartesian Radius", length_unit_manager(singularity_radius))
+                statistics("Ring Singularity Cartesian Diameter", length_unit_manager(singularity_radius * 2))
     return singularity_radius
 
 def singularity_draw(bh_mass, a_star, singularity_radius, outer_event_horizon_radius):
@@ -2541,10 +2548,14 @@ def inner_ergosphere_radius(bh_mass, a_star, theta, show):
     inner_ergosphere_radius = gravitational_radius(bh_mass) * (1 - np.sqrt(1 - ((a_star ** 2) * (np.cos(theta) ** 2))))
     if show == True:
         print(Fore.LIGHTGREEN_EX + f"Inner Ergosphere Boyer-Linquist Radius: {Fore.RESET} {length_unit_manager(inner_ergosphere_radius)}", end="\n")
+        statistics("Inner Ergosphere Boyer-Linquist Radius", length_unit_manager(inner_ergosphere_radius))
         print(Fore.LIGHTGREEN_EX + f"Inner Ergosphere Boyer-Linquist Diameter: {Fore.RESET} {length_unit_manager(inner_ergosphere_radius * 2)}", end="\n")
+        statistics("Inner Ergosphere Boyer-Linquist Diameter", length_unit_manager(inner_ergosphere_radius * 2))
         print("         ********************            ")
         print(Fore.LIGHTCYAN_EX + f"Inner Ergosphere Cartesian Radius: {Fore.RESET} {length_unit_manager(cartesian_radius(bh_mass, inner_ergosphere_radius, a_star, theta))}", end="\n")
+        statistics("Inner Ergosphere Cartesian Radius", length_unit_manager(cartesian_radius(bh_mass, inner_ergosphere_radius, a_star, theta)))
         print(Fore.LIGHTCYAN_EX + f"Inner Ergosphere Cartesian Diameter: {Fore.RESET} {length_unit_manager(cartesian_radius(bh_mass, inner_ergosphere_radius, a_star, theta) * 2)}", end="\n")
+        statistics("Inner Ergosphere Cartesian Diameter", length_unit_manager(cartesian_radius(bh_mass, inner_ergosphere_radius, a_star, theta) * 2))
         print(Fore.RED + "----------------------------------------" + Fore.RESET) 
     return inner_ergosphere_radius
 
@@ -2612,10 +2623,14 @@ def inner_event_horizon_radius(bh_type, bh_mass, a_star, theta, show):
         inner_radius = gravitational_radius(bh_mass) * (1 - np.sqrt(1 - pow(a_star,2)))
         if show == True:
             print(Fore.LIGHTGREEN_EX + f"Inner Event Horizon Boyer-Lindquist Radius: {Fore.RESET} {length_unit_manager(inner_radius)}", end="\n")
+            statistics("Inner Event Horizon Boyer-Lindquist Radius", length_unit_manager(inner_radius))
             print(Fore.LIGHTGREEN_EX + f"Inner Event Horizon Boyer-Lindquist Diameter: {Fore.RESET} {length_unit_manager(inner_radius * 2)}", end="\n")
+            statistics("Inner Event Horizon Boyer-Lindquist Diameter", length_unit_manager(inner_radius * 2))
             print("         ********************            ")
             print(Fore.LIGHTCYAN_EX + f"Inner Event Horizon Cartesian Radius: {Fore.RESET} {length_unit_manager(cartesian_radius(bh_mass, inner_radius, a_star, theta))}", end="\n")
+            statistics("Inner Event Horizon Cartesian Radius", length_unit_manager(cartesian_radius(bh_mass, inner_radius, a_star, theta)))
             print(Fore.LIGHTCYAN_EX + f"Inner Event Horizon Cartesian Diameter: {Fore.RESET} {length_unit_manager(cartesian_radius(bh_mass, inner_radius, a_star, theta) * 2)}", end="\n")
+            statistics("Inner Event Horizon Cartesian Diameter", length_unit_manager(cartesian_radius(bh_mass, inner_radius, a_star, theta) * 2))
             print(Fore.RED + "----------------------------------------" + Fore.RESET)  
 
         return inner_radius
@@ -2680,17 +2695,23 @@ def outer_event_horizon_radius(bh_type, bh_mass, a_star, theta, show):
             outer_radius = ((2 * bh_mass * gravitational_constant) / c2)
             if show == True:
                 print(Fore.LIGHTGREEN_EX + f"Event Horizon Radius: {Fore.RESET} {length_unit_manager(outer_radius)}", end="\n")
-                print(Fore.LIGHTGREEN_EX + f"Event Horizon Diameter: {Fore.RESET} {length_unit_manager(outer_radius * 2)}", end="\n")  
+                statistics("Event Horizon Radius", length_unit_manager(outer_radius))
+                print(Fore.LIGHTGREEN_EX + f"Event Horizon Diameter: {Fore.RESET} {length_unit_manager(outer_radius * 2)}", end="\n")
+                statistics("Event Horizon Diameter", length_unit_manager(outer_radius * 2))  
                 print(Fore.RED + "----------------------------------------" + Fore.RESET)
 
         case "kerr" | "2":  
             outer_radius = gravitational_radius(bh_mass) * (1 + np.sqrt(1 - pow(a_star,2)))
             if show == True:
                 print(Fore.LIGHTGREEN_EX + f"Outer Event Horizon Boyer-Lindquist Radius: {Fore.RESET} {length_unit_manager(outer_radius)}", end="\n")
-                print(Fore.LIGHTGREEN_EX + f"Outer Event Horizon Boyer-Lindquist Diameter: {Fore.RESET} {length_unit_manager(outer_radius * 2)}", end="\n")  
+                statistics("Outer Event Horizon Boyer-Lindquist Radius", length_unit_manager(outer_radius))
+                print(Fore.LIGHTGREEN_EX + f"Outer Event Horizon Boyer-Lindquist Diameter: {Fore.RESET} {length_unit_manager(outer_radius * 2)}", end="\n")
+                statistics("Outer Event Horizon Boyer-Lindquist Diameter", length_unit_manager(outer_radius * 2))
                 print("         ********************            ")
                 print(Fore.LIGHTCYAN_EX + f"Outer Event Horizon Cartesian Radius: {Fore.RESET} {length_unit_manager(cartesian_radius(bh_mass, outer_radius, a_star, theta))}", end="\n")
+                statistics("Outer Event Horizon Cartesian Radius", length_unit_manager(cartesian_radius(bh_mass, outer_radius, a_star, theta)))
                 print(Fore.LIGHTCYAN_EX + f"Outer Event Horizon Cartesian Diameter: {Fore.RESET} {length_unit_manager(cartesian_radius(bh_mass, outer_radius, a_star, theta) * 2)}", end="\n")
+                statistics("Outer Event Horizon Cartesian Diameter", length_unit_manager(cartesian_radius(bh_mass, outer_radius, a_star, theta) * 2))
                 print(Fore.RED + "----------------------------------------" + Fore.RESET)
 
     return outer_radius
@@ -2773,12 +2794,17 @@ def outer_ergosphere_radius(bh_mass, a_star, theta, show):
     outer_ergosphere_radius_from_horizon = cartesian_radius(bh_mass, outer_ergosphere_radius, a_star, theta) - cartesian_radius(bh_mass, outer_event_horizon_radius("kerr", bh_mass, a_star, theta, False), a_star, theta)
     if show == True:
         print(Fore.LIGHTGREEN_EX + f"Outer Ergosphere Boyer-Lindquist Radius: {Fore.RESET} {length_unit_manager(outer_ergosphere_radius)}", end="\n")
+        statistics("Outer Ergosphere Boyer-Lindquist Radius", length_unit_manager(outer_ergosphere_radius))
         print(Fore.LIGHTGREEN_EX + f"Outer Ergosphere Boyer-Lindquist Diamater: {Fore.RESET} {length_unit_manager(outer_ergosphere_radius * 2)}", end="\n")
+        statistics("Outer Ergosphere Boyer-Lindquist Diameter", length_unit_manager(outer_ergosphere_radius * 2))
         print("         ********************            ")
         print(Fore.LIGHTCYAN_EX + f"Outer Ergosphere Cartesian Radius: {Fore.RESET} {length_unit_manager(cartesian_radius(bh_mass, outer_ergosphere_radius, a_star, theta))}", end="\n")
+        statistics("Outer Ergosphere Cartesian Radius", length_unit_manager(cartesian_radius(bh_mass, outer_ergosphere_radius, a_star, theta)))
         print(Fore.LIGHTCYAN_EX + f"Outer Ergosphere Cartesian Diameter: {Fore.RESET} {length_unit_manager(cartesian_radius(bh_mass, outer_ergosphere_radius, a_star, theta) * 2)}", end="\n")
+        statistics("Outer Ergosphere Cartesian Diameter", length_unit_manager(cartesian_radius(bh_mass, outer_ergosphere_radius, a_star, theta) * 2))
         print("         ********************            ")
         print(Fore.LIGHTRED_EX + f"Extended about: {Fore.RESET} {length_unit_manager(outer_ergosphere_radius_from_horizon)} {Fore.LIGHTRED_EX} from the Outer Event Horizon at the Equator.", end="\n")
+        statistics("Extension From the Event Horizon at the Equator", length_unit_manager(outer_ergosphere_radius_from_horizon))
         print(Fore.RED + "----------------------------------------" + Fore.RESET)
 
     return outer_ergosphere_radius
@@ -3715,6 +3741,7 @@ def photon_sphere_radius(bh_type, bh_mass, a_star, direction, theta, show):
         phs_radius = 3 * gravitational_radius(bh_mass)
         if show == True:
             print(Fore.LIGHTGREEN_EX + f"Photon Sphere Radius at {round(np.degrees(theta))}°: {Fore.RESET} {length_unit_manager(phs_radius)}", end="\n")
+            statistics(f"Photon Sphere Radius at {round(np.degrees(theta))}°", length_unit_manager(phs_radius))
     else:
         if a_star == 1 and direction == "prograde":
             a_star = 0.999999999999999
@@ -3763,12 +3790,16 @@ def photon_sphere_radius(bh_type, bh_mass, a_star, direction, theta, show):
                 phs_radius = min(roots)
                 if show == True:
                     print(Fore.LIGHTGREEN_EX + f"Co-Rotating Photon Sphere Max Boyer-Lindquist Radius at {round(np.degrees(theta))}°: {Fore.RESET} {length_unit_manager(phs_radius)}", end="\n")
+                    statistics(f"Co-Rotating Photon Sphere Max Boyer-Lindquist Radius at {round(np.degrees(theta))}°", length_unit_manager(phs_radius))
                     print(Fore.LIGHTCYAN_EX + f"Co-Rotating Photon Sphere Max Cartesian Radius at {round(np.degrees(theta))}°: {Fore.RESET} {length_unit_manager(cartesian_radius(bh_mass, phs_radius, a_star, theta))}", end="\n")
+                    statistics(f"Co-Rotating Photon Sphere Max Cartesian Radius at {round(np.degrees(theta))}°", length_unit_manager(cartesian_radius(bh_mass, phs_radius, a_star, theta)))
             case "retrograde":
                 phs_radius = max(roots)
                 if show == True:
                     print(Fore.LIGHTGREEN_EX + f"Counter-Rotating Photon Sphere Max Boyer-Lindquist Radius at {round(np.degrees(theta))}°: {Fore.RESET} {length_unit_manager(phs_radius)}", end="\n")
+                    statistics(f"Counter-Rotating Photon Sphere Max Boyer-Lindquist Radius at {round(np.degrees(theta))}°", length_unit_manager(phs_radius))
                     print(Fore.LIGHTCYAN_EX + f"Counter-Rotating Photon Sphere Max Cartesian Radius at {round(np.degrees(theta))}°: {Fore.RESET} {length_unit_manager(cartesian_radius(bh_mass, phs_radius, a_star, theta))}", end="\n")
+                    statistics(f"Counter-Rotating Photon Sphere Max Cartesian Radius at {round(np.degrees(theta))}°", length_unit_manager(cartesian_radius(bh_mass, phs_radius, a_star, theta)))
 
         if show == True:
             fda_velocity = frame_dragging_angular_velocity(bh_mass, a_star, phs_radius, gravitational_radius(bh_mass), theta, False)
@@ -3776,10 +3807,22 @@ def photon_sphere_radius(bh_type, bh_mass, a_star, direction, theta, show):
             if np.isclose(fdl_velocity, 0, atol=1e-6, rtol=0):
                 fdl_velocity = 0.0
             print(Fore.RED + f"Frame-dragging coordinate linear speed at {round(np.degrees(theta))}°: {Fore.RESET} {speed_unit_manager(fdl_velocity)}", end="\n")
+            match direction:
+                case "prograde":
+                    statistics(f"Co-Rotating Photon Sphere Frame-dragging coordinate linear speed at {round(np.degrees(theta))}°", speed_unit_manager(fdl_velocity))
+                case "retrograde":
+                    statistics(f"Counter-Rotating Photon Sphere Frame-dragging coordinate linear speed at {round(np.degrees(theta))}°", speed_unit_manager(fdl_velocity))
 
     if show == True:
         print("         ********************            ") 
         print(Fore.LIGHTRED_EX + f"it's about: {Fore.RESET} {length_unit_manager(cartesian_radius(bh_mass, phs_radius, a_star, theta) - cartesian_radius(bh_mass, outer_event_horizon_radius(bh_type, bh_mass, a_star, theta, False), a_star, theta))} {Fore.LIGHTRED_EX} from the Outer Event Horizon.", end="\n")
+        match direction:
+            case "prograde":
+                statistics(f"Co-Rotating Photon Sphere Distance from the Event Horizon at {round(np.degrees(theta))}°", length_unit_manager(cartesian_radius(bh_mass, phs_radius, a_star, theta) - cartesian_radius(bh_mass, outer_event_horizon_radius(bh_type, bh_mass, a_star, theta, False), a_star, theta)))
+            case "retrograde":
+                statistics(f"Counter-Rotating Photon Sphere Distance from the Event Horizon at {round(np.degrees(theta))}°", length_unit_manager(cartesian_radius(bh_mass, phs_radius, a_star, theta) - cartesian_radius(bh_mass, outer_event_horizon_radius(bh_type, bh_mass, a_star, theta, False), a_star, theta)))
+            case _:
+                statistics(f"Photon Sphere Distance from the Event Horizon at {round(np.degrees(theta))}°", length_unit_manager(cartesian_radius(bh_mass, phs_radius, a_star, theta) - cartesian_radius(bh_mass, outer_event_horizon_radius(bh_type, bh_mass, a_star, theta, False), a_star, theta)))
         print(Fore.RED + "----------------------------------------" + Fore.RESET)
     return phs_radius
 
@@ -4026,7 +4069,9 @@ def isco_sphere_radius(bh_type, bh_mass, a_star, direction, theta, show):
         isco_radius = (gravitational_radius(bh_mass) * 6)
         if show == True:
             print(Fore.LIGHTGREEN_EX + f"ISCO Sphere Radius at {round(np.degrees(theta))}°: {Fore.RESET} {length_unit_manager(isco_radius)}", end="\n")
+            statistics(f"ISCO Sphere Radius at {round(np.degrees(theta))}°", length_unit_manager(isco_radius))
             print(Fore.LIGHTRED_EX + f"it's about: {Fore.RESET} {length_unit_manager(isco_radius-outer_ev)} {Fore.LIGHTRED_EX} from the Outer Event Horizon.", end="\n")
+            statistics(f"ISCO Sphere Distance from the Event Horizon at {round(np.degrees(theta))}°", length_unit_manager(isco_radius-outer_ev))
             print(Fore.RED + "----------------------------------------" + Fore.RESET)
 
     elif bh_type in ["kerr", "2"]:
@@ -4076,12 +4121,16 @@ def isco_sphere_radius(bh_type, bh_mass, a_star, direction, theta, show):
                 isco_radius = min(roots)
                 if show == True:
                     print(Fore.LIGHTGREEN_EX + f"Prograde ISCO Max Boyer-Lindquist Radius at {round(np.degrees(theta))}°: {Fore.RESET} {length_unit_manager(isco_radius)}", end="\n")
+                    statistics(f"Prograde ISCO Max Boyer-Lindquist Radius at {round(np.degrees(theta))}°", length_unit_manager(isco_radius))
                     print(Fore.LIGHTCYAN_EX + f"Prograde ISCO Max Cartesian Radius at {round(np.degrees(theta))}°: {Fore.RESET} {length_unit_manager(cartesian_radius(bh_mass, isco_radius, a_star, theta))}", end="\n")
+                    statistics(f"Prograde ISCO Max Cartesian Radius at {round(np.degrees(theta))}°", length_unit_manager(cartesian_radius(bh_mass, isco_radius, a_star, theta)))
             case "retrograde":
                 isco_radius = max(roots)
                 if show == True:
                     print(Fore.LIGHTGREEN_EX + f"Retrograde ISCO Max Boyer-Lindquist Radius at {round(np.degrees(theta))}°: {Fore.RESET} {length_unit_manager(isco_radius)}", end="\n")
+                    statistics(f"Retrograde ISCO Max Boyer-Lindquist Radius at {round(np.degrees(theta))}°", length_unit_manager(isco_radius))
                     print(Fore.LIGHTCYAN_EX + f"Retrograde ISCO Max Cartesian Radius at {round(np.degrees(theta))}°: {Fore.RESET} {length_unit_manager(cartesian_radius(bh_mass, isco_radius, a_star, theta))}", end="\n")
+                    statistics(f"Retrograde ISCO Max Cartesian Radius at {round(np.degrees(theta))}°", length_unit_manager(cartesian_radius(bh_mass, isco_radius, a_star, theta)))
 
         if show == True:
             fda_velocity = frame_dragging_angular_velocity(bh_mass, a_star, isco_radius, gravitational_radius(bh_mass), theta, False)
@@ -4089,10 +4138,20 @@ def isco_sphere_radius(bh_type, bh_mass, a_star, direction, theta, show):
             if np.isclose(fdl_velocity, 0, atol=1e-6, rtol=0):
                 fdl_velocity = 0.0
             print(Fore.RED + f"Frame-dragging coordinate linear speed at {round(np.degrees(theta))}°: {Fore.RESET} {speed_unit_manager(fdl_velocity)}", end="\n")
+            match direction:
+                case "prograde":
+                    statistics(f"Prograde ISCO Sphere Frame-dragging coordinate linear speed at {round(np.degrees(theta))}°", speed_unit_manager(fdl_velocity))
+                case "retrograde":
+                    statistics(f"Retrograde ISCO Sphere Frame-dragging coordinate linear speed at {round(np.degrees(theta))}°", speed_unit_manager(fdl_velocity))
 
     if show == True:
         print("         ********************            ") 
-        print(Fore.LIGHTRED_EX + f"you shoud orbit at least at a distance of {Fore.RESET} {length_unit_manager(isco_radius-outer_ev)} {Fore.LIGHTRED_EX} from the Outer Event Horizon.")
+        print(Fore.LIGHTRED_EX + f"it's about {Fore.RESET} {length_unit_manager(cartesian_radius(bh_mass, isco_radius, a_star, theta)-cartesian_radius(bh_mass, outer_ev, a_star, theta))} {Fore.LIGHTRED_EX} from the Outer Event Horizon.")
+        match direction:
+            case "prograde":
+                statistics(f"Prograde ISCO Sphere Distance from the Event Horizon at {round(np.degrees(theta))}°", length_unit_manager(cartesian_radius(bh_mass, isco_radius, a_star, theta)-cartesian_radius(bh_mass, outer_ev, a_star, theta)))
+            case "retrograde":
+                statistics(f"Retrograde ISCO Sphere Distance from the Event Horizon at {round(np.degrees(theta))}°", length_unit_manager(cartesian_radius(bh_mass, isco_radius, a_star, theta)-cartesian_radius(bh_mass, outer_ev, a_star, theta)))
         print(Fore.RED + "----------------------------------------" + Fore.RESET)
 
     return isco_radius
@@ -4817,25 +4876,26 @@ def time_dilation(a_star, near_type, direction, bh_mass, distance, time, theta):
 
 #statistics saver
 def statistics(fieldname, value):
-    global bh_data
+    global bh_data, fieldnames
     file_exists = os.path.exists(f"{bh_name}.csv")
-    fieldnames = ["Name", "Type", "Dimensionless Spin Parameter","Black Hole Velocity at the Equator", "Solar Mass","Solar Mass in Words", "SI Mass", "SI Mass in Words"]
+    if not fieldname in fieldnames:
+        fieldnames.append(fieldname)
 
-    if file_exists:
-        with open(f"{bh_name}.csv", "r") as bh_read:
-            bh_data.extend(row for row in csv.DictReader(bh_read))
+        if file_exists:
+            with open(f"{bh_name}.csv", "r") as bh_read:
+                reader = csv.DictReader(bh_read)
+                bh_data.extend(reader)
+                fieldnames.extend(field for field in reader.fieldnames if field not in fieldnames) if reader.fieldnames else None
 
-    if not bh_data == []:
+        if bh_data == []: bh_data.append({})
+
         bh_data[0][fieldname] = value
-    else:
-        bh_data.append({})
-        bh_data[0][fieldname] = value
-    
-    with open(f"{bh_name}.csv", "w", newline='') as bh_write:
-        saver = csv.DictWriter(bh_write, fieldnames=fieldnames)
-        saver.writeheader()
-        saver.writerows(bh_data)
-        bh_data = []
+        
+        with open(f"{bh_name}.csv", "w", newline='') as bh_write:
+            saver = csv.DictWriter(bh_write, fieldnames=fieldnames)
+            saver.writeheader()
+            saver.writerows(bh_data)
+            bh_data = []
 
 
 #calling the engine
