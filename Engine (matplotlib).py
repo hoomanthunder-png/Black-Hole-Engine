@@ -13,7 +13,7 @@ plt.show(block=False)
 
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
-print(Fore.MAGENTA + "Black Hole Engine. Version = 16.378" + Fore.RESET)
+print(Fore.MAGENTA + "Black Hole Engine. Version = 16.384" + Fore.RESET)
 print()
 
 bh_name = ""
@@ -4879,13 +4879,13 @@ def time_dilation(a_star, near_type, direction, bh_mass, distance, time, theta):
 #statistics saver
 def statistics(fieldname, value):
     global bh_data, fieldnames
-    file_exists = os.path.exists(f"{bh_name}.csv")
+    # file_exists = os.path.exists(f"{bh_name}.csv")
 
-    if file_exists:
-        with open(f"{bh_name}.csv", "r") as bh_read:
-            reader = csv.DictReader(bh_read)
-            bh_data.extend(reader)
-            fieldnames.extend(field for field in reader.fieldnames if field not in fieldnames) if reader.fieldnames else None
+    # if file_exists:
+    #     with open(f"{bh_name}.csv", "r") as bh_read:
+    #         reader = csv.DictReader(bh_read)
+    #         bh_data.extend(reader)
+    #         fieldnames.extend(field for field in reader.fieldnames if field not in fieldnames) if reader.fieldnames else None
 
     if not fieldname in fieldnames:
         fieldnames.append(fieldname)
@@ -4896,8 +4896,7 @@ def statistics(fieldname, value):
         saver = csv.DictWriter(bh_write, fieldnames=fieldnames)
         saver.writeheader()
         saver.writerows(bh_data)
-        bh_data = [{}]
-
+        # bh_data = [{}]
 
 #calling the engine
 if __name__ == "__main__":
