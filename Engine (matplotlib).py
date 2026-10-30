@@ -13,11 +13,11 @@ plt.show(block=False)
 
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
-print(Fore.MAGENTA + "Black Hole Engine. Version = 16.346" + Fore.RESET)
+print(Fore.MAGENTA + "Black Hole Engine. Version = 16.378" + Fore.RESET)
 print()
 
 bh_name = ""
-bh_data = []
+bh_data = [{}]
 fieldnames = []
 sun = 1989000000000000000000000000000
 c = 299792458
@@ -3963,8 +3963,8 @@ def photon_ring_draw(bh_type, bh_mass, a_star, direction, polar_angle, azimuthal
             else:
                 theta_end = theta_surface[last_index]
 
-            #include the exact boundary angles
-            theta_valid = np.concatenate(([theta_start], theta_surface[valid], [theta_end]))
+            #generate additional points within the intersection boundaries
+            theta_valid = np.linspace(theta_start, theta_end, 200)
 
             theta_valid = np.unique(theta_valid)
 
@@ -4075,8 +4075,8 @@ def isco_sphere_radius(bh_type, bh_mass, a_star, direction, theta, show):
             print(Fore.RED + "----------------------------------------" + Fore.RESET)
 
     elif bh_type in ["kerr", "2"]:
-        if a_star == 1 and direction == "prograde":
-            a_star = 0.999999999999999
+        if a_star >= 0.999999999999996 and direction == "prograde":
+            a_star = 0.999999999999996
 
         m = gravitational_radius(bh_mass)
 
@@ -4229,7 +4229,7 @@ def isco_ring_draw(bh_type, bh_mass, a_star, direction, polar_angle, azimuthal_a
         a = a_star * gravitational_radius(bh_mass)
 
         #normal vector of the selected plane
-        normal = np.array([-np.cos(azimuthal_angle) * np.cos(polar_angle), -np.sin(azimuthal_angle) * np.cos(polar_angle), np.sin(polar_angle)], dtype=float)
+        normal = np.array([np.sin(azimuthal_angle - np.pi / 2) * np.sin(np.pi / 2 - polar_angle), -np.cos(azimuthal_angle - np.pi / 2) * np.sin(np.pi / 2 - polar_angle), np.cos(np.pi / 2 - polar_angle)], dtype=float)
         normal /= np.linalg.norm(normal)
 
         #calculate the intersection between the plane and ISCO boundary
@@ -4246,8 +4246,10 @@ def isco_ring_draw(bh_type, bh_mass, a_star, direction, polar_angle, azimuthal_a
             def intersection_ratio(theta):
                 radius = np.interp(theta, theta_surface, r_surface)
                 denominator = np.sqrt(radius**2 + a**2) * np.sin(theta) * horizontal_normal
+
                 if abs(denominator) < 1e-14:
                     return np.inf
+
                 return -normal[2] * radius * np.cos(theta) / denominator
 
             #calculate the intersection ratio at sampled angles
@@ -4275,8 +4277,8 @@ def isco_ring_draw(bh_type, bh_mass, a_star, direction, polar_angle, azimuthal_a
             else:
                 theta_end = theta_surface[last_index]
 
-            #include the exact boundary angles
-            theta_valid = np.unique(np.concatenate(([theta_start], theta_surface[valid], [theta_end])))
+            #generate additional points within the intersection boundaries
+            theta_valid = np.linspace(theta_start, theta_end, 200)
 
             #calculate the ISCO radius at each angle
             r_valid = np.interp(theta_valid, theta_surface, r_surface)
@@ -4878,24 +4880,23 @@ def time_dilation(a_star, near_type, direction, bh_mass, distance, time, theta):
 def statistics(fieldname, value):
     global bh_data, fieldnames
     file_exists = os.path.exists(f"{bh_name}.csv")
+
+    if file_exists:
+        with open(f"{bh_name}.csv", "r") as bh_read:
+            reader = csv.DictReader(bh_read)
+            bh_data.extend(reader)
+            fieldnames.extend(field for field in reader.fieldnames if field not in fieldnames) if reader.fieldnames else None
+
     if not fieldname in fieldnames:
         fieldnames.append(fieldname)
 
-        if file_exists:
-            with open(f"{bh_name}.csv", "r") as bh_read:
-                reader = csv.DictReader(bh_read)
-                bh_data.extend(reader)
-                fieldnames.extend(field for field in reader.fieldnames if field not in fieldnames) if reader.fieldnames else None
-
-        if bh_data == []: bh_data.append({})
-
-        bh_data[0][fieldname] = value
-        
-        with open(f"{bh_name}.csv", "w", newline='') as bh_write:
-            saver = csv.DictWriter(bh_write, fieldnames=fieldnames)
-            saver.writeheader()
-            saver.writerows(bh_data)
-            bh_data = []
+    bh_data[0][fieldname] = value
+    
+    with open(f"{bh_name}.csv", "w", newline='') as bh_write:
+        saver = csv.DictWriter(bh_write, fieldnames=fieldnames)
+        saver.writeheader()
+        saver.writerows(bh_data)
+        bh_data = [{}]
 
 
 #calling the engine
