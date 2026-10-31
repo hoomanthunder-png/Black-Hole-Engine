@@ -13,7 +13,7 @@ plt.show(block=False)
 
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
-print(Fore.MAGENTA + "Black Hole Engine. Version = 16.384" + Fore.RESET)
+print(Fore.MAGENTA + "Black Hole Engine. Version = 16.388" + Fore.RESET)
 print()
 
 bh_name = ""
@@ -397,7 +397,7 @@ def type_check(bh_type):
         return "kerr"
 
 def spin_parser(a_star):
-    a_star.lower()
+    a_star = a_star.lower()
     unit = ""
     velocity = 0
 
@@ -419,15 +419,14 @@ def spin_parser(a_star):
 
         part1, part2 = a_star.split(".")
 
-        for i in part1:
-            if not i.isdigit():
-                part1 = part1.replace(str(i), "")
+        part1 = "".join(i for i in part1 if i.isdigit())
 
-        for i in part2:
-            if not i.isdigit():
-                part2 = part2.replace(str(i), "")
+        part2 = "".join(i for i in part2 if i.isdigit())
 
         a_star = part1 + "." + part2
+
+        a_star = a_star[:a_star.find(".") + 1] + a_star[a_star.find(".") + 1:].replace(".","")
+
         a_star = float(a_star)
 
         if 0 <= a_star <= 1:
@@ -449,9 +448,9 @@ def spin_parser(a_star):
         if first_c != -1:
             a_star = a_star[:first_c]
 
-        for i in a_star:
-            if not i.isdigit() and i != ".":
-                a_star = a_star.replace(str(i), "")
+        a_star = "".join(i for i in a_star if (i.isdigit() or i == "."))
+
+        a_star = a_star[:a_star.find(".") + 1] + a_star[a_star.find(".") + 1:].replace(".", "")
 
         a_star = float(a_star)
 
@@ -468,9 +467,7 @@ def spin_parser(a_star):
             return False, None
         
     elif first_dot == -1 and "c" in a_star:
-        for i in a_star:
-            if i.isalpha():
-                a_star = a_star.replace(str(i), "")
+        a_star = "".join(i for i in a_star if i.isdigit())
 
         if a_star != "":
             a_star = float(a_star)
