@@ -1,5 +1,4 @@
-import NumberLex, warnings, csv, os, numpy as np, scipy.optimize as opt
-from colorama import Fore
+import NumberLex, warnings, csv, os, numpy as np, scipy.optimize as opt; from colorama import Fore
 
 #matplotlib liberary
 import matplotlib.pyplot as plt
@@ -13,7 +12,7 @@ plt.show(block=False)
 
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
-print(Fore.MAGENTA + "Black Hole Engine. Version = 16.388" + Fore.RESET)
+print(Fore.MAGENTA + "Black Hole Engine. Version = 16.390" + Fore.RESET)
 print()
 
 bh_name = ""
@@ -24,6 +23,7 @@ c = 299792458
 c2 = 89875517873681764
 c3 = 26944002417373989539335912
 gravitational_constant = 0.000000000066743
+gravitational_radius_saved = False
 time_type_list = {"s" : "Second", "m" : "Minute", "h" : "Hour", "d" : "Day", "mn" : "Month", "y" : "Year"}
 distance_type_list = {"m" : 1, "km" : 1000, "au" : 149597870700, "ly" : 9460730000000000}
 velocity_type_list = {"cm/s" : 0.01, "m/s" : 1, "sos/s" : 343, "km/s" : 1000, "c/s" : 299792458}
@@ -2443,8 +2443,11 @@ def polar_isco_equation(bh_mass, a_star, radius):
 
 #black hole main structure
 def gravitational_radius(bh_mass):
+    global gravitational_radius_saved
     gravitational_radius = (bh_mass * gravitational_constant) / c2
-    statistics("Gravitational Radius", length_unit_manager(gravitational_radius))
+    if gravitational_radius_saved == False:
+        statistics("Gravitational Radius", length_unit_manager(gravitational_radius))
+        gravitational_radius_saved = True
     return gravitational_radius
 
 def singularity_radius(bh_mass, a_star, show):
