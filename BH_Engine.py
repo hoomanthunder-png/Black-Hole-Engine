@@ -1,4 +1,4 @@
-import NumberLex, warnings, csv, os, numpy as np, scipy.optimize as opt; from colorama import Fore
+import NumberLex, warnings, csv, os, re, numpy as np, scipy.optimize as opt; from colorama import Fore
 
 #matplotlib liberary
 import matplotlib.pyplot as plt
@@ -12,7 +12,7 @@ plt.show(block=False)
 
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
-print(Fore.MAGENTA + "Black Hole Engine. Version = 16.390" + Fore.RESET)
+print(Fore.MAGENTA + "Black Hole Engine. Version = 16.475" + Fore.RESET)
 print()
 
 bh_name = ""
@@ -401,139 +401,147 @@ def spin_parser(a_star):
     unit = ""
     velocity = 0
 
-    if a_star == "":
-        a_star = "0"
-
-    if a_star == "0":
+    #zeros
+    if re.fullmatch(r"[^1-9c]*", a_star):
         print(Fore.LIGHTGREEN_EX + "by setting the Spin Parameter as Zero, you actually chose a Non_Spinning Black Hole!" + Fore.RESET)
         print()
         return None, None
 
-    if a_star.startswith("."):
-        a_star = "0" + a_star
+    #deleting all nonesence characters
+    a_star = re.sub(r"[^0-9.ckms/]", "", a_star)
 
-    first_dot = a_star.find(".")
+    #is dot exists and c doesn't exists
+    if (matches := re.search(r"\.+", a_star)) and not re.search(r"c", a_star):
+        #remove all possible dots after the first one
+        a_star = a_star[:matches.start() + 1] + (a_star[matches.start() + 1:].replace(".", ""))
 
-    if first_dot != -1 and "c" not in a_star:
-        a_star = (a_star[:first_dot + 1] + a_star[first_dot + 1:].replace(".", ""))
+        #deleting all nonesence characters except dot
+        a_star = re.sub(r"[^0-9.]", "", a_star)
 
-        part1, part2 = a_star.split(".")
+        if matches := re.fullmatch(r"([0]*\.[0-9]+|[1]\.*[0]*)", a_star):
 
-        part1 = "".join(i for i in part1 if i.isdigit())
+            a_star = float(matches.group(0))
 
-        part2 = "".join(i for i in part2 if i.isdigit())
-
-        a_star = part1 + "." + part2
-
-        a_star = a_star[:a_star.find(".") + 1] + a_star[a_star.find(".") + 1:].replace(".","")
-
-        a_star = float(a_star)
-
-        if 0 <= a_star <= 1:
-            velocity = c * (1 - np.sqrt(1 - a_star**2)) / a_star
-            return a_star, velocity
-        else:
-            print(
-                f"{Fore.LIGHTCYAN_EX} spin parser says:"
-                f"{Fore.LIGHTRED_EX} Incorrect spin! dimensionless spin must be between 0 and 1!"
-            )
-            print()
-            return False, None
-
-    elif first_dot != -1 and "c" in a_star:
-        a_star = (a_star[:first_dot + 1] + a_star[first_dot + 1:].replace(".", ""))
-
-        first_c = a_star.find("c")
-
-        if first_c != -1:
-            a_star = a_star[:first_c]
-
-        a_star = "".join(i for i in a_star if (i.isdigit() or i == "."))
-
-        a_star = a_star[:a_star.find(".") + 1] + a_star[a_star.find(".") + 1:].replace(".", "")
-
-        a_star = float(a_star)
-
-        if 0 <= a_star <= 1:
-            velocity = a_star * c
-            a_star = (2 * a_star) / (1 + a_star**2)
-            return a_star, velocity
-        else:
-            print(
-                f"{Fore.LIGHTCYAN_EX} spin parser says:"
-                f"{Fore.LIGHTRED_EX} Incorrect spin! speed must be less or equal to c!"
-            )
-            print()
-            return False, None
-        
-    elif first_dot == -1 and "c" in a_star:
-        a_star = "".join(i for i in a_star if i.isdigit())
-
-        if a_star != "":
-            a_star = float(a_star)
-        else:
-            a_star = 1
-        
-        if 0 <= a_star <= 1:
-            velocity = a_star * c
-            a_star = (2 * a_star) / (1 + a_star**2)
-            return a_star, velocity
-        else:
-            print(
-                f"{Fore.LIGHTCYAN_EX} spin parser says:"
-                f"{Fore.LIGHTRED_EX} Incorrect spin! speed must be less or equal to c!"
-            )
-            print()
-            return False, None
-        
-    else:
-        for i in a_star:
-            if not i.isdigit():
-                unit += str(i)
-                a_star = a_star.replace(str(i), "")
-
-        if unit == "" and 0 <= float(a_star) <= 1:
-            a_star = float(a_star)
-            velocity = c * (1 - np.sqrt(1 - a_star**2)) / a_star
-            return a_star, velocity
-
-        elif unit == "" and not 0 <= float(a_star) <= 1:
-            print(
-                f"{Fore.LIGHTCYAN_EX} spin parser says:"
-                f"{Fore.LIGHTRED_EX} Incorrect spin! dimensionless spin must be between 0 and 1!"
-            )
-            print()
-            return False, None
-
-        elif unit != "" and not unit in ["km/s", "kms", "m/s", "ms", "c"]:
-            print(
-                f"{Fore.LIGHTCYAN_EX} spin parser says:"
-                f"{Fore.LIGHTRED_EX} Incorrect spin! unit must be either 'km/s' | 'kms' | 'm/s' | 'ms' | 'c'!"
-            )
-            print()
-            return False, None
-
-        else:
-            a_star = float(a_star)
-
-            if unit in ["km/s", "kms"]:
-                velocity = a_star * 1000
-            elif unit in ["m/s", "ms"]:
-                velocity = a_star
-            elif unit == "c":
-                velocity = a_star * c
-
-            if 0 <= velocity <= c:
-                a_star = (2 * (velocity / c)) / (1 + (velocity / c)**2)
+            if 0 <= a_star <= 1:
+                velocity = c * (1 - np.sqrt(1 - a_star**2)) / a_star
                 return a_star, velocity
             else:
                 print(
                     f"{Fore.LIGHTCYAN_EX} spin parser says:"
-                    f"{Fore.LIGHTRED_EX} Incorrect spin! speed must be less or equal to "
-                    f"299,792,458 m/s | 299,792.458 km/s | c!"
+                    f"{Fore.LIGHTRED_EX} Incorrect spin! dimensionless spin must be between 0 and 1!"
                 )
                 print()
                 return False, None
+        else:
+            print(
+                f"{Fore.LIGHTCYAN_EX} spin parser says:"
+                f"{Fore.LIGHTRED_EX} Incorrect spin! dimensionless spin must be between 0 and 1!"
+            )
+            print()
+            return False, None
+
+    #is dot exists and c exists
+    elif (matches := re.search(r"\.+", a_star)) and re.search(r"c", a_star):
+        #remove all possible dots after the first one
+        a_star = a_star[:matches.start() + 1] + (a_star[matches.start() + 1:].replace(".", ""))
+        #remove all possible "c" after the first one
+        if matches := re.search(r"c", a_star):
+            a_star = a_star[:matches.start() + 1] + (a_star[matches.start() + 1:].replace("c", ""))
+
+        #deleting all nonesence characters except dot
+        a_star = re.sub(r"[^0-9.]", "", a_star)
+
+        if matches := re.fullmatch(r"([0]*\.[0-9]+|[1]\.*[0]*)", a_star):
+
+            a_star = float(matches.group(0))
+
+            if 0 <= a_star <= 1:
+                velocity = a_star * c
+                a_star = (2 * a_star) / (1 + a_star**2)
+                return a_star, velocity
+            else:
+                print(
+                    f"{Fore.LIGHTCYAN_EX} spin parser says:"
+                    f"{Fore.LIGHTRED_EX} Incorrect spin! speed must be less or equal to c!"
+                )
+                print()
+                return False, None
+        else:
+            print(
+                f"{Fore.LIGHTCYAN_EX} spin parser says:"
+                f"{Fore.LIGHTRED_EX} Incorrect spin! speed must be less or equal to c!"
+            )
+            print()
+            return False, None
+        
+    # elif first_dot == -1 and "c" in a_star:
+    #     a_star = "".join(i for i in a_star if i.isdigit())
+
+    #     if a_star != "":
+    #         a_star = float(a_star)
+    #     else:
+    #         a_star = 1
+        
+    #     if 0 <= a_star <= 1:
+    #         velocity = a_star * c
+    #         a_star = (2 * a_star) / (1 + a_star**2)
+    #         return a_star, velocity
+    #     else:
+    #         print(
+    #             f"{Fore.LIGHTCYAN_EX} spin parser says:"
+    #             f"{Fore.LIGHTRED_EX} Incorrect spin! speed must be less or equal to c!"
+    #         )
+    #         print()
+    #         return False, None
+        
+    # else:
+    #     for i in a_star:
+    #         if not i.isdigit():
+    #             unit += str(i)
+    #             a_star = a_star.replace(str(i), "")
+
+    #     if unit == "" and 0 <= float(a_star) <= 1:
+    #         a_star = float(a_star)
+    #         velocity = c * (1 - np.sqrt(1 - a_star**2)) / a_star
+    #         return a_star, velocity
+
+    #     elif unit == "" and not 0 <= float(a_star) <= 1:
+    #         print(
+    #             f"{Fore.LIGHTCYAN_EX} spin parser says:"
+    #             f"{Fore.LIGHTRED_EX} Incorrect spin! dimensionless spin must be between 0 and 1!"
+    #         )
+    #         print()
+    #         return False, None
+
+    #     elif unit != "" and not unit in ["km/s", "kms", "m/s", "ms", "c"]:
+    #         print(
+    #             f"{Fore.LIGHTCYAN_EX} spin parser says:"
+    #             f"{Fore.LIGHTRED_EX} Incorrect spin! unit must be either 'km/s' | 'kms' | 'm/s' | 'ms' | 'c'!"
+    #         )
+    #         print()
+    #         return False, None
+
+    #     else:
+    #         a_star = float(a_star)
+
+    #         if unit in ["km/s", "kms"]:
+    #             velocity = a_star * 1000
+    #         elif unit in ["m/s", "ms"]:
+    #             velocity = a_star
+    #         elif unit == "c":
+    #             velocity = a_star * c
+
+    #         if 0 <= velocity <= c:
+    #             a_star = (2 * (velocity / c)) / (1 + (velocity / c)**2)
+    #             return a_star, velocity
+    #         else:
+    #             print(
+    #                 f"{Fore.LIGHTCYAN_EX} spin parser says:"
+    #                 f"{Fore.LIGHTRED_EX} Incorrect spin! speed must be less or equal to "
+    #                 f"299,792,458 m/s | 299,792.458 km/s | c!"
+    #             )
+    #             print()
+    #             return False, None
 
 def mass_parser(bh_mass):
     if bh_mass != "":
