@@ -12,7 +12,7 @@ plt.show(block=False)
 
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
-print(Fore.MAGENTA + "Black Hole Engine. Version = 16.478" + Fore.RESET)
+print(Fore.MAGENTA + "Black Hole Engine. Version = 16.772" + Fore.RESET)
 print()
 
 bh_name = ""
@@ -402,7 +402,7 @@ def spin_parser(a_star):
     velocity = 0
 
     #zeros
-    if re.fullmatch(r"[^1-9c]*", a_star):
+    if re.fullmatch(r"[^1-9ckms/]*", a_star):
         print(Fore.LIGHTGREEN_EX + "by setting the Spin Parameter as Zero, you actually chose a Non_Spinning Black Hole!" + Fore.RESET)
         print()
         return None, None
@@ -475,55 +475,63 @@ def spin_parser(a_star):
 
     #if there are units ("kms", "km/s", "ms", "m/s", "c")
     else:
-
+        
         if matches := re.search(r"(kms|km/s|ms|m/s)", a_star):
-    #     for i in a_star:
-    #         if not i.isdigit():
-    #             unit += str(i)
-    #             a_star = a_star.replace(str(i), "")
 
-    #     if unit == "" and 0 <= float(a_star) <= 1:
-    #         a_star = float(a_star)
-    #         velocity = c * (1 - np.sqrt(1 - a_star**2)) / a_star
-    #         return a_star, velocity
+            #remove all possible dots after the first one
+            a_star = a_star[:a_star.find(".") + 1] + (a_star[a_star.find(".") + 1:].replace(".", ""))
+            
+            #store unit in variable
+            unit = matches.group(0)
 
-    #     elif unit == "" and not 0 <= float(a_star) <= 1:
-    #         print(
-    #             f"{Fore.LIGHTCYAN_EX} spin parser says:"
-    #             f"{Fore.LIGHTRED_EX} Incorrect spin! dimensionless spin must be between 0 and 1!"
-    #         )
-    #         print()
-    #         return False, None
+            #remove all characters except [0 - 9]
+            a_star = re.sub(r"[^0-9.]", "", a_star)
 
-    #     elif unit != "" and not unit in ["km/s", "kms", "m/s", "ms", "c"]:
-    #         print(
-    #             f"{Fore.LIGHTCYAN_EX} spin parser says:"
-    #             f"{Fore.LIGHTRED_EX} Incorrect spin! unit must be either 'km/s' | 'kms' | 'm/s' | 'ms' | 'c'!"
-    #         )
-    #         print()
-    #         return False, None
+            match unit:
+                case "kms"|"km/s":
+                    if re.search(r"\.", a_star):
+                        #ensuring that the pattern of speed in km/s or kms matches the speed of light (dot included)
+                        matches = re.fullmatch(r"([0]*[0-9]{0,3}\.[0-9]*|[0-2][0-9][0-9][0-6][0-9]{0,2}\.[0-9]*|2997[0-8]?[0-9]?\.[0-9]*|29979[0-1]?\.[0-9]*|299792\.0*(?:[0-9]{0,2}|[0-3][0-9]*|4[0-4][0-9]*|45[0-7][0-9]*|458[0]*))", a_star)
+                    else:
+                        #ensuring that the pattern of speed in km/s or kms matches the speed of light
+                        matches = re.fullmatch(r"([0]*[0-9]{0,3}|[0-2][0-9][0-9][0-6][0-9]{0,2}|2997[0-8]?[0-9]?|29979[0-1]?|299792)", a_star)
 
-    #     else:
-    #         a_star = float(a_star)
+                case "ms"|"m/s":
+                    if re.search(r"\.", a_star):
+                        #ensuring that the pattern of speed in m/s or ms matches the speed of light (dot included)
+                        matches = re.fullmatch(r"([0]*[0-9]{0,3}\.[0-9]*|[0-2][0-9][0-9][0-6][0-9]{0,5}\.[0-9]*|2997[0-8]?[0-9]{0,4}\.[0-9]*|29979[0-2]?[0-3]?[0-9]{0,2}\.[0-9]*|2997924[0-4]?[0-9]?\.[0-9]*|29979245[0-7]?\.[0-9]*|299792458\.0*)", a_star)
+                    else:
+                        #ensuring that the pattern of speed in m/s or ms matches the speed of light
+                        matches = re.fullmatch(r"([0]*[0-9]{0,3}|[0-2][0-9][0-9][0-6][0-9]{0,5}|2997[0-8]?[0-9]{0,4}|29979[0-2]?[0-3]?[0-9]{0,2}|2997924[0-4]?[0-9]?|29979245[0-7]?|299792458\.0*)", a_star)
 
-    #         if unit in ["km/s", "kms"]:
-    #             velocity = a_star * 1000
-    #         elif unit in ["m/s", "ms"]:
-    #             velocity = a_star
-    #         elif unit == "c":
-    #             velocity = a_star * c
+            #convering speed unit to spin parameter
+            if matches:
+                a_star = float(a_star)
 
-    #         if 0 <= velocity <= c:
-    #             a_star = (2 * (velocity / c)) / (1 + (velocity / c)**2)
-    #             return a_star, velocity
-    #         else:
-    #             print(
-    #                 f"{Fore.LIGHTCYAN_EX} spin parser says:"
-    #                 f"{Fore.LIGHTRED_EX} Incorrect spin! speed must be less or equal to "
-    #                 f"299,792,458 m/s | 299,792.458 km/s | c!"
-    #             )
-    #             print()
-    #             return False, None
+                if unit in ["km/s", "kms"]:
+                    velocity = a_star * 1000
+                elif unit in ["m/s", "ms"]:
+                    velocity = a_star
+
+                if 0 <= velocity <= c:
+                    a_star = (2 * (velocity / c)) / (1 + (velocity / c)**2)
+                    return a_star, velocity
+            else:
+                print(
+                    f"{Fore.LIGHTCYAN_EX} spin parser says:"
+                    f"{Fore.LIGHTRED_EX} Incorrect spin! speed must be less or equal to "
+                    f"299,792,458 m/s | 299,792.458 km/s | c!"
+                )
+                print()
+                return False, None
+        
+        else:
+            print(
+                f"{Fore.LIGHTCYAN_EX} spin parser says:"
+                f"{Fore.LIGHTRED_EX} Incorrect spin! unit must be either 'km/s' | 'kms' | 'm/s' | 'ms' | 'c'!"
+            )
+            print()
+            return False, None
 
 def mass_parser(bh_mass):
     if bh_mass != "":
